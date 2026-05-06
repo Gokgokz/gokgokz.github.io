@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>มะเขือเทศ 90 วัน 🍅</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --tomato: #ff4757;
+            --tomato-dark: #ff1e27;
+            --bg-gradient: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        * { box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* Ambient Particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px) scale(0); opacity: 0; }
+        }
+
+        .garden-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 50px 40px;
+            box-shadow: var(--glass-shadow);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header & Typography */
+        h1 { margin: 0 0 5px 0; font-size: 28px; font-weight: 600; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .subtitle { font-size: 14px; opacity: 0.85; margin-bottom: 25px; }
+        
+        .status-pill {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-dark);
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        /* Progress Ring & Day Counter */
+        .progress-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px auto;
+        }
+        .progress-circle { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .progress-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 8; }
+        .progress-bar { 
+            fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; 
+            stroke-dasharray: 314; stroke-dashoffset: 314; transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .day-counter {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-family: 'Poppins', sans-serif;
+        }
+        .day-num { font-size: 36px; font-weight: 700; line-height: 1; }
+        .day-text { font-size: 12px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* SVG Plant Stage */
+        .plant-view {
+            height: 280px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        svg.plant-svg { width: 100%; height: 100%; overflow: visible; }
+
+        /* SVG Animations */
+        #stem { fill: none; stroke: url(#stemGrad); stroke-width: 7; stroke-linecap: round; transition: 1.5s ease-out; stroke-dasharray: 400; stroke-dashoffset: 400; }
+        .leaf { fill: url(#leafGrad); opacity: 0; transform: scale(0); transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: center; }
+        .flower { fill: #fdd835; opacity: 0; transition: 1s ease; transform: scale(0); transform-origin: center; }
+        .tomato { fill: url(#tomatoGrad); opacity: 0; transform: scale(0); transition: 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: center; }
+
+        /* --- Stage Logic --- */
+        .stage-seed #seed { opacity: 1; transform: scale(1); }
+        
+        .stage-sprout #stem { stroke-dashoffset: 350; }
+        .stage-sprout .leaf-1 { opacity: 1; transform: scale(1); }
+        
+        .stage-grow #stem { stroke-dashoffset: 200; }
+        .stage-grow .leaf { opacity: 1; transform: scale(1); }
+        
+        .stage-mature #stem, .stage-flower #stem, .stage-fruit #stem { stroke-dashoffset: 0; }
+        .stage-mature .leaf, .stage-flower .leaf, .stage-fruit .leaf { opacity: 1; transform: scale(1.3); }
+        
+        .stage-flower .flower { opacity: 1; transform: scale(1); }
+        
+        .stage-fruit .flower { opacity: 0; transform: scale(0); }
+        .stage-fruit .tomato { opacity: 1; transform: scale(1); filter: drop-shadow(0 5px 10px rgba(255, 71, 87, 0.4)); }
+
+        /* Buttons */
+        .btn {
+            width: 100%; padding: 18px; border-radius: 20px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px;
+        }
+        .btn-main { background: #fff; color: var(--primary-dark); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-main:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(0,0,0,0.15); }
+        .btn-main:active:not(:disabled) { transform: translateY(1px); }
+        .btn-main:disabled { background: rgba(255,255,255,0.5); color: #fff; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .btn-text { background: transparent; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 300; padding: 10px; margin-top: 10px; }
+        .btn-text:hover { color: #fff; text-decoration: underline; }
+
+        /* Drop Animation */
+        #water-drop { position: absolute; font-size: 30px; opacity: 0; pointer-events: none; top: -20px; left: calc(50% - 15px); }
+        @keyframes dropWater {
+            0% { transform: translateY(0); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(200px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        // สร้าง Effect ละอองฝุ่นลอยไปมา
+        for(let i=0; i<15; i++) {
+            let p = document.createElement('div');
+            p.className = 'particle';
+            p.style.width = Math.random() * 6 + 2 + 'px';
+            p.style.height = p.style.width;
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = Math.random() * 100 + 'vh';
+            p.style.animationDuration = Math.random() * 5 + 5 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(p);
+        }
+    </script>
+
+    <div class="garden-card">
+        <h1>มะเขือเทศ 90 วัน 🍅</h1>
+        <div class="subtitle">รดน้ำทุกวันเพื่อเฝ้าดูการเติบโต</div>
+
+        <div class="progress-wrapper">
+            <svg class="progress-circle" viewBox="0 0 110 110">
+                <circle class="progress-bg" cx="55" cy="55" r="50"></circle>
+                <circle class="progress-bar" id="ring" cx="55" cy="55" r="50"></circle>
+            </svg>
+            <div class="day-counter">
+                <div class="day-num" id="day-val">0</div>
+                <div class="day-text">Days</div>
+            </div>
+        </div>
+
+        <div class="status-pill" id="stage-label">เมล็ดพันธุ์รอการงอก</div>
+
+        <div class="plant-view" id="plant-box">
+            <div id="water-drop">💧</div>
+            <svg class="plant-svg" viewBox="0 0 200 300">
+                <defs>
+                    <linearGradient id="potGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ecf0f1"/>
+                        <stop offset="100%" stop-color="#bdc3c7"/>
+                    </linearGradient>
+                    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#2ecc71"/>
+                        <stop offset="100%" stop-color="#27ae60"/>
+                    </linearGradient>
+                    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#55efc4"/>
+                        <stop offset="100%" stop-color="#00b894"/>
+                    </linearGradient>
+                    <radialGradient id="tomatoGrad" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#ff7675"/>
+                        <stop offset="100%" stop-color="#d63031"/>
+                    </radialGradient>
+                </defs>
+
+                <path d="M 60,250 L 140,250 L 125,290 L 75,290 Z" fill="url(#potGrad)"/>
+                <ellipse cx="100" cy="250" rx="40" ry="8" fill="#7f8c8d"/>
+                <ellipse cx="100" cy="250" rx="35" ry="5" fill="#5d4037"/> 
+                
+                <circle id="seed" cx="100" cy="252" r="3" fill="#d35400" opacity="0"/>
+                <path id="stem" d="M100,250 Q100,150 85,100 T100,30" />
+                
+                <g id="leaves">
+                    <path class="leaf leaf-1" d="M100,200 Q70,180 50,210 Q80,220 100,200" />
+                    <path class="leaf leaf-2" d="M100,160 Q130,140 150,170 Q120,180 100,160" />
+                    <path class="leaf leaf-3" d="M88,110 Q58,90 38,120 Q68,130 88,110" />
+                    <path class="leaf leaf-4" d="M95,70 Q125,50 145,80 Q115,90 95,70" />
+                </g>
+
+                <g id="flowers">
+                    <circle class="flower" cx="70" cy="90" r="7" />
+                    <circle class="flower" cx="120" cy="120" r="7" />
+                    <circle class="flower" cx="105" cy="50" r="7" />
+                </g>
+
+                <g id="fruits">
+                    <circle class="tomato" cx="70" cy="95" r="14" />
+                    <circle class="tomato" cx="120" cy="125" r="18" />
+                    <circle class="tomato" cx="105" cy="55" r="12" />
+                </g>
+            </svg>
+        </div>
+
+        <button class="btn btn-main" id="btn-water">💧 รดน้ำต้นไม้วันนี้</button>
+        <button class="btn btn-text" id="btn-reset">ถอนราก เริ่มปลูกใหม่</button>
+    </div>
+
+    <script>
+        const TOTAL = 90;
+        const STAGES = [
+            { day: 0,  label: "เมล็ดพันธุ์รอการงอก", class: "stage-seed" },
+            { day: 5,  label: "ต้นอ่อนเริ่มผลิใบ", class: "stage-sprout" },
+            { day: 20, label: "กำลังเติบโต", class: "stage-grow" },
+            { day: 40, label: "ต้นโตเต็มวัย", class: "stage-mature" },
+            { day: 60, label: "ออกดอกสีเหลืองสวยงาม", class: "stage-flower" },
+            { day: 85, label: "มะเขือเทศสุกพร้อมเก็บ! 🍅", class: "stage-fruit" }
+        ];
+
+        let days = parseInt(localStorage.getItem('premium_tomato_days')) || 0;
+        let lastDate = localStorage.getItem('premium_tomato_last') || "";
+
+        function updateUI() {
+            days = Math.min(days, TOTAL); // ป้องกันวันเกิน 90
+            
+            // อัปเดตตัวเลขและวงแหวน
+            document.getElementById('day-val').innerText = days;
+            const ring = document.getElementById('ring');
+            const circumference = 314; // 2 * pi * r (r=50)
+            const offset = circumference - (days / TOTAL) * circumference;
+            ring.style.strokeDashoffset = offset;
+
+            // ตรวจสอบระยะการเติบโต
+            let current = STAGES[0];
+            STAGES.forEach(s => { if(days >= s.day) current = s; });
+
+            document.getElementById('stage-label').innerText = current.label;
+            document.getElementById('plant-box').className = "plant-view " + current.class;
+
+            // อัปเดตปุ่มรดน้ำ
+            const btnWater = document.getElementById('btn-water');
+
+            if (days >= TOTAL) {
+                // เมื่อโตเต็มที่ (90 วัน) ให้เปลี่ยนเป็นปุ่มเก็บเกี่ยว
+                btnWater.disabled = false;
+                btnWater.innerHTML = "🧺 เก็บเกี่ยวผลผลิต";
+                btnWater.onclick = () => {
+                    alert("ยินดีด้วย! คุณเฝ้าดูแลจนเก็บเกี่ยวผลผลิตสำเร็จ 🍅 เริ่มต้นปลูกรอบใหม่ได้เลย");
+                    days = 0; lastDate = ""; save(); updateUI();
+                    btnWater.onclick = waterAction; // รีเซ็ตฟังก์ชันกลับไปรดน้ำตามเดิม
+                };
+            } else if (lastDate === new Date().toDateString()) {
+                // ถ้ารดน้ำไปแล้วในวันนี้
+                btnWater.disabled = true;
+                btnWater.innerHTML = "รดน้ำแล้ว ✔️ กลับมาใหม่พรุ่งนี้นะ";
+                btnWater.onclick = waterAction;
+            } else {
+                // ถ้ายังไม่ได้รดน้ำในวันนี้
+                btnWater.disabled = false;
+                btnWater.innerHTML = "💧 รดน้ำต้นไม้วันนี้";
+                btnWater.onclick = waterAction;
+            }
+        }
+
+        const waterAction = () => {
+            const drop = document.getElementById('water-drop');
+            drop.style.animation = "dropWater 1s forwards";
+            
+            setTimeout(() => {
+                drop.style.animation = "";
+                days++;
+                lastDate = new Date().toDateString(); // บันทึกวันที่ปัจจุบัน
+                save(); 
+                updateUI();
+            }, 800);
+        };
+
+        // เริ่มต้นผูก Event Listener ให้ปุ่มรดน้ำ
+        document.getElementById('btn-water').onclick = waterAction;
+
+        // ปุ่มถอนรากปลูกใหม่
+        document.getElementById('btn-reset').onclick = () => {
+            if(confirm("คุณแน่ใจหรือไม่ว่าต้องการถอนต้นมะเขือเทศทิ้งเพื่อเริ่มปลูกใหม่? (ข้อมูลจะถูกรีเซ็ต)")) {
+                days = 0; lastDate = "";
+                save(); updateUI();
+            }
+        };
+
+        function save() {
+            localStorage.setItem('premium_tomato_days', days);
+            localStorage.setItem('premium_tomato_last', lastDate);
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
