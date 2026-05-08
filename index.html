@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2b2d42">
+    <title>CN ฉงชิ่ง 5D4N</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f4f6fa; --card-bg: #ffffff; --primary: #ff4757; --text-dark: #1e272e;
+            --text-gray: #747d8c; --header-bg: linear-gradient(135deg, #2b2b36 0%, #e94057 100%);
+            --input-bg: #f1f2f6; --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        body.dark-mode {
+            --bg-main: #121212; --card-bg: #1e1e1e; --text-dark: #f1f2f6; --text-gray: #a4b0be;
+            --header-bg: linear-gradient(135deg, #192a56 0%, #8c2a3e 100%); --input-bg: #2d3436;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Kanit', sans-serif; background-color: #000; margin: 0; display: flex; justify-content: center; transition: 0.3s; }
+
+        .app-container {
+            width: 100%; max-width: 430px; background-color: var(--bg-main); min-height: 100vh; position: relative; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); padding-bottom: calc(90px + var(--safe-bottom)); transition: 0.3s;
+        }
+
+        /* Header */
+        .app-header {
+            background: var(--header-bg); color: white; padding: calc(20px + var(--safe-top)) 20px 20px 20px;
+            position: sticky; top: 0; z-index: 100; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .header-titles h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
+        .header-titles p { margin: 2px 0 0 0; font-size: 13px; font-weight: 300; opacity: 0.9; }
+        .header-actions { display: flex; gap: 8px; }
+        .icon-btn {
+            background: rgba(255,255,255,0.15); border: none; border-radius: 50%; width: 38px; height: 38px; 
+            font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white;
+        }
+
+        /* Total Expense Box */
+        .total-box {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; 
+            padding: 18px 16px; text-align: center; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .total-box .label { font-size: 14px; font-weight: 400; opacity: 0.9; margin-bottom: 5px; }
+        .total-box .primary-amt {
+            font-size: 38px; font-weight: 700; color: #f1c40f; text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; align-items: baseline; justify-content: center; line-height: 1.1; margin-bottom: 8px;
+        }
+        .total-box .primary-amt small { font-size: 16px; margin-left: 6px; color: white; font-weight: 500; text-shadow: none; }
+        .total-box .secondary-amt {
+            background: rgba(46, 213, 115, 0.2); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.5);
+            padding: 4px 14px; border-radius: 20px; font-size: 16px; font-weight: 600; display: inline-block;
+        }
+
+        .progress-text { font-size: 11px; text-align: right; margin-bottom: 5px; font-weight: 600; opacity: 0.9;}
+        .progress-container { background: rgba(0,0,0,0.2); border-radius: 10px; height: 6px; width: 100%; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar { background: #2ed573; height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 10px; }
+
+        /* Day Tabs & Scrollbar */
+        .day-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 12px; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.4) rgba(255,255,255,0.1); }
+        .day-tabs::-webkit-scrollbar { height: 6px; }
+        .day-tabs::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        .day-tabs::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.5); border-radius: 10px; }
+        body.dark-mode .day-tabs::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.5); }
+        .tab-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-family: 'Kanit'; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: #ffffff; color: #e94057; border-color: #ffffff; font-weight: 600; }
+
+        /* Content */
+        .content { padding: 20px 15px; }
+        .day-group { display: none; animation: fadeIn 0.3s ease; }
+        .day-group.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .day-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; }
+        .day-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--primary); border-radius: 4px; margin-right: 10px; }
+
+        /* Card & Task Item */
+        .activity-card {
+            background: var(--card-bg); border-radius: 16px; padding: 20px 16px; margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; gap: 15px; align-items: flex-start;
+            transition: all 0.4s ease; overflow: hidden; max-height: 800px; opacity: 1; border: 1px solid rgba(0,0,0,0.02);
+        }
+        .activity-card.completed { max-height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; opacity: 0; border: none; }
+
+        .checkbox-wrapper { position: relative; min-width: 24px; height: 24px; cursor: pointer; margin-top: 2px;}
+        .checkbox-wrapper input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .checkmark { position: absolute; top: 0; left: 0; height: 24px; width: 24px; border: 2px solid #8e9bb0; border-radius: 50%; transition: 0.2s; }
+        .checkbox-wrapper input:checked ~ .checkmark { background-color: #2ed573; border-color: #2ed573; }
+        .checkmark:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .checkbox-wrapper input:checked ~ .checkmark:after { display: block; }
+
+        .activity-info { flex-grow: 1; width: 100%;}
+        .time-badge { background: #ffeaa7; color: #d35400; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
+        .title { font-size: 15px; font-weight: 500; color: var(--text-dark); margin: 0 0 6px 0; line-height: 1.4; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+        .desc { font-size: 13px; color: var(--text-gray); margin: 0; line-height: 1.5; }
+        .desc span { display: block; margin-top: 4px; }
+        
+        .action-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 8px;}
+        .btn-tag { background: #eccc68; color: #2f3542; text-decoration: none; font-size: 11px; padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; border: none; font-family: 'Kanit'; cursor: pointer; }
+        .btn-tag.cn { background: #ff4757; color: white; }
+
+        .expense-box { margin-top: 12px; display: flex; align-items: center; background: var(--input-bg); border-radius: 8px; padding: 6px 12px; }
+        .expense-box span { color: #ff4757; font-weight: 600; margin-right: 8px; font-size: 13px; }
+        .expense-box input { border: none; background: transparent; outline: none; font-family: 'Kanit'; font-size: 13px; width: 100%; color: var(--text-dark); }
+        
+        .btn-add-task { width: 100%; background: transparent; border: 2px dashed rgba(116, 125, 140, 0.4); color: var(--text-gray); padding: 12px; border-radius: 14px; font-family: 'Kanit'; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 12px; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-add-task:active { background: rgba(0,0,0,0.05); }
+
+        .title-custom { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 10px; }
+        .btn-delete-custom { color: #ff4757; font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Kanit'; padding: 0; margin-top: 2px; flex-shrink: 0;}
+
+        /* Bottom Reset Bar */
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; max-width: 430px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 15px 20px calc(15px + var(--safe-bottom)); border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; }
+        body.dark-mode .bottom-bar { background: rgba(30,30,30,0.9); border-color: rgba(255,255,255,0.05); }
+        .btn-reset { background: var(--input-bg); color: var(--text-dark); border: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+
+        /* MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(5px); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(20px); transition: 0.3s; color: var(--text-dark); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; }
+        .input-group { background: var(--input-bg); border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: center;}
+        .input-group input, .input-group textarea { border: none; background: transparent; font-size: 15px; color: var(--text-dark); outline: none; width: 100%; font-family: 'Kanit'; }
+        
+        .btn-primary { background: #ff4757; color: white; border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; font-family: 'Kanit'; margin-bottom: 8px;}
+        .btn-close { background: var(--input-bg); color: var(--text-dark); border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; font-family: 'Kanit'; }
+
+        /* Flashcard & Converter */
+        .flashcard-prefix { font-size: 16px; color: var(--text-gray); margin-bottom: 10px; }
+        .flashcard-cn { font-size: 44px; font-weight: 700; color: #ff4757; margin: 0; line-height: 1.2; }
+        .flashcard-py { font-size: 16px; color: var(--text-gray); margin: 10px 0; }
+        .flashcard-th { font-size: 18px; font-weight: 500; margin-bottom: 25px; }
+
+        .converter-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .conv-rate { font-size: 13px; color: var(--text-gray); margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .conv-rate input { width: 45px; background: transparent; border: 1px solid var(--text-gray); color: var(--text-dark); border-radius: 6px; text-align: center; padding: 2px; font-family: 'Kanit'; }
+        
+        .btn-refresh { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-dark); padding: 0; display: flex; align-items: center; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spinning { animation: spin 1s linear infinite; pointer-events: none;}
+        .api-status { font-size: 11px; height: 16px; margin-bottom: 15px; color: #2ed573; transition: 0.3s; }
+
+        .conv-input-group { display: flex; align-items: center; background: var(--input-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .conv-input-group span { font-size: 20px; font-weight: 600; color: var(--text-gray); margin-right: 15px; }
+        .conv-input-group input { flex-grow: 1; border: none; background: transparent; font-size: 20px; font-weight: 600; color: var(--text-dark); outline: none; width: 100%; }
+        .conv-result { font-size: 32px; font-weight: 700; color: #2ed573; margin: 10px 0 20px 0; }
+
+        /* Sync Loading Overlay */
+        #sync-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-main); z-index: 1000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: 0.5s;
+        }
+        .spinner-sync {
+            width: 40px; height: 40px; border: 4px solid rgba(255, 71, 87, 0.2);
+            border-top-color: #ff4757; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sync-overlay">
+        <div class="spinner-sync"></div>
+        <div style="color: var(--text-dark); font-weight: 500; font-family: 'Kanit';">กำลังดึงข้อมูลทริปล่าสุด...</div>
+    </div>
+
+    <div class="app-container">
+        <div class="app-header">
+            <div class="header-top">
+                <div class="header-titles">
+                    <h1>CN ฉงชิ่ง 5D4N</h1>
+                    <p>Cyberpunk & 3D City Experience (Sync อัตโนมัติ)</p>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="openConverter()">💱</button>
+                    <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+                </div>
+            </div>
+
+            <div class="total-box">
+                <div class="label">ยอดใช้จ่ายทริปนี้:</div>
+                <div class="primary-amt"><span id="total-spent">0</span><small>หยวน</small></div>
+                <div class="secondary-amt"><span id="total-spent-thb">≈ 0</span> บาท</div>
+            </div>
+
+            <div class="progress-text">ตะลุยทริปไปแล้ว <span id="progress-percent">0</span>%</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="trip-progress"></div>
+            </div>
+
+            <div class="day-tabs" id="tab-container">
+                <button class="tab-btn active" onclick="switchTab(event, 'pre-trip')">🎒 เตรียมตัว</button>
+                <button class="tab-btn" onclick="switchTab(event, 'day1')">Day 1</button>
+                <button class="tab-btn" onclick="switchTab(event, 'day2')">Day 2</button>
+                <button class="tab-btn" onclick="switchTab(event, 'day3')">Day 3</button>
+                <button class="tab-btn" onclick="switchTab(event, 'day4')">Day 4</button>
+                <button class="tab-btn" onclick="switchTab(event, 'day5')">Day 5</button>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <div class="day-group active" id="pre-trip">
+                <div class="day-title">🎒 เช็กลิสต์ก่อนบิน</div>
+                
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="title">โหลด & ผูกบัตร Alipay / WeChat Pay</div>
+                        <div class="desc"><span>จีนสังคมไร้เงินสด 99% ต้องผูกบัตร Travel Card (YouTrip/Planet) ให้เรียบร้อย</span></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="title">ซื้อ Sim โรมมิ่ง หรือ E-Sim</div>
+                        <div class="desc"><span>แนะนำ Sim2Fly หรือ Ready2Fly จะได้เล่น Line/FB/IG ได้โดยไม่ต้องเปิด VPN</span></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="title">โหลดแอปพลิเคชันจำเป็น</div>
+                        <div class="desc"><span>🗺️ Baidu Maps (แผนที่จีน) <br>🚕 DiDi (เรียกแท็กซี่) <br>🗣️ Google Translate (โหลดออฟไลน์ภาษาจีนไว้)</span></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="title">พาสปอร์ต & ของใช้ส่วนตัว</div>
+                        <div class="desc"><span>พาสปอร์ตต้องพกติดตัวเสมอ (ใช้แทนตั๋วรถไฟ/ตั๋วเข้าที่เที่ยว) + พกทิชชู่เปียกแห้ง (ห้องน้ำจีนมักไม่มี)</span></div>
+                    </div>
+                </div>
+
+                <button class="btn-add-task" onclick="openAddTaskModal('pre-trip')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+            
+            <div class="day-group" id="day1">
+                <div class="day-title">📍 Day 1: วันศุกร์ที่ 26 มิ.ย. (ปะทะเมือง 3 มิติ)</div>
+                
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">05:00 - 07:00</div>
+                        <div class="title">ถึงสนามบิน CKG ผ่าน ตม. นำกระเป๋าไปฝากโรงแรมย่าน Jiefangbei</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Jiefangbei+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('解放碑', 'Jiěfàngbēi', 'เจี่ยฟ่างเปย (Jiefangbei)')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่งรถไฟใต้ดิน (CRT) สาย 10 เปลี่ยนเป็นสาย 2 หรือ 3</span>
+                            <span>💰 ค่ารถ: ~7 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">08:00 - 09:00</div>
+                        <div class="title">มื้อเช้า: บะหมี่ฉงชิ่ง (Xiaomian) แถวที่พัก</div>
+                        <div class="desc">
+                            <span>💰 ค่าอาหาร: ~15 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">09:30 - 11:30</div>
+                        <div class="title">สถานีรถไฟทะลุตึก Liziba (หลี่จื่อป้า) ถ่ายรูปจากมุมข้างล่างทางออก A</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Liziba+Station+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('李子坝', 'Lǐzǐbà', 'สถานีรถไฟหลี่จื่อป้า')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 2 ไปลงสถานี Liziba ออกทางออก A</span>
+                            <span>💰 ค่ารถ: ~3 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">12:00 - 15:30</div>
+                        <div class="title">เมืองโบราณ Ciqikou เดินเล่นและทานสตรีทฟู้ดเป็นมื้อเที่ยง</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Ciqikou+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('磁器口', 'Cíqìkǒu', 'เมืองโบราณฉือชี่โข่ว')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 1 ไปลงสถานี Ciqikou (ออกทางออก 1)</span>
+                            <span>💰 ค่าอาหาร: ~50 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">16:00 - 18:00</div>
+                        <div class="title">กลับโรงแรม เช็คอิน อาบน้ำพักผ่อน</div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">18:30 - 21:00</div>
+                        <div class="title">ถ่ายรูป Hongyadong (หงหยาต้ง) แนะนำให้ไปช่วงฟ้าเริ่มมืด เปิดไฟสวยมาก</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Hongyadong+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('洪崖洞', 'Hóngyádòng', 'หงหยาต้ง')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚶 เดินทาง: เดินเท้าจาก Jiefangbei ประมาณ 10-15 นาที (ฟรี)</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">21:00</div>
+                        <div class="title">มื้อค่ำ: หม่าล่าหม้อไฟฉงชิ่งขนานแท้</div>
+                        <div class="desc">
+                            <span>💰 ค่าอาหาร: ~100-150 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <button class="btn-add-task" onclick="openAddTaskModal('day1')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+
+            <div class="day-group" id="day2">
+                <div class="day-title">📍 Day 2: วันเสาร์ที่ 27 มิ.ย. (The Surreal City & Pandas)</div>
+                <p style="font-size: 13px; color: var(--text-gray); margin: 0 0 10px 5px;">เก็บไฮไลต์ในเมือง ทั้งความน่ารักของแพนด้า สถาปัตยกรรมสุดล้ำ และกลิ่นอายหนังฮ่องกงยุค 90s</p>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">08:30 - 11:30</div>
+                        <div class="title">สวนสัตว์ฉงชิ่ง (Chongqing Zoo) ไฮไลต์: ชมแพนด้ายักษ์ แนะนำให้ไปแต่เช้าตอนน้องตื่นมากินไผ่</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Chongqing+Zoo" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('重庆动物园', 'Chóngqìng Dòngwùyuán', 'สวนสัตว์ฉงชิ่ง')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 2 ไปลงสถานี Dongwuyuan</span>
+                            <span>💰 ค่าเข้า: 25 หยวน / ค่ารถ: ~4 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">12:00 - 13:30</div>
+                        <div class="title">ร้านหนังสือ Zhongshuge (จงซูเก๋อ) สาขา Zodi Plaza พร้อมทานมื้อเที่ยง ในห้าง ไฮไลต์: ร้านหนังสือ 3 มิติกระจกเงาสะท้อน หลุดไปในหนัง Inception</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Zhongshuge+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('钟书阁', 'Zhōngshūgé', 'ร้านหนังสือจงซูเก๋อ')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 2 กลับมาลงสถานี Yangjiaping</span>
+                            <span>💰 ค่าอาหาร: ~50 หยวน (เข้าฟรี)</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">14:30 - 15:30</div>
+                        <div class="title">บันไดเลื่อนมงกุฎ (Crown Escalator) ไฮไลต์: บันไดเลื่อนที่ยาวที่สุดในเอเชีย ฟีลลิ่งดิบเท่สไตล์หนัง Better Days</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Crown+Escalator+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('皇冠大扶梯', 'Huángguān Dàfútī', 'บันไดเลื่อนมงกุฎ')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 1 หรือ 3 ลงสถานี Lianglukou ทางออก 4</span>
+                            <span>💰 ค่าขึ้น/ลง: เที่ยวละ 2 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">16:00 - 18:00</div>
+                        <div class="title">ตรอกซานเฉิง (Shancheng Alley) ไฮไลต์: ทางเดินลัดเลาะริมหน้าผา ชมวิวแม่น้ำแยงซีเกียงและวิถีชีวิตดั้งเดิม</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Shancheng+Alley+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('山城巷', 'Shānchéng Xiàng', 'ตรอกซานเฉิง')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 1 ลงสถานี Jiaochangkou เดินต่ออีกนิด</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">18:30 - 21:00</div>
+                        <div class="title">เมืองโบราณสือปาถี (Shibati) และทานมื้อค่ำสตรีทฟู้ด ไฮไลต์: หมู่บ้านโบราณไล่ระดับไหล่เขา เปิดไฟตอนกลางคืนสวยงามมาก</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Shibati+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('十八梯', 'Shíbātī', 'เมืองโบราณสือปาถี')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>💰 ค่าอาหาร: ~60 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <button class="btn-add-task" onclick="openAddTaskModal('day2')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+
+            <div class="day-group" id="day3">
+                <div class="day-title">📍 Day 3: วันอาทิตย์ที่ 28 มิ.ย. (นั่งกระเช้า เสพงานศิลป์ ชมวิวหลักล้าน)</div>
+                
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">09:00 - 10:00</div>
+                        <div class="title">นั่งกระเช้าข้ามแม่น้ำ (Yangtze River Cableway)</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Yangtze+River+Cableway" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('长江索道', 'Chángjiāng Suǒdào', 'กระเช้าข้ามแม่น้ำแยงซี')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚶 เดินไปสถานี Xinhua Road (ควรจองคิวล่วงหน้าผ่าน WeChat)</span>
+                            <span>💰 ค่ากระเช้าไป-กลับ: ~30 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">10:30 - 12:30</div>
+                        <div class="title">เดินเล่น Longmenhao Old Street และทานมื้อเที่ยงฝั่งหนานอัน</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Longmenhao+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('龙门浩老街', 'Lóngménhào Lǎojiē', 'ถนนเก่าหลงเหมินฮ่าว')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚶 เดินทาง: ลงกระเช้าฝั่งใต้แล้วเดินต่อได้เลย</span>
+                            <span>💰 ค่าอาหาร: ~60 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">13:30 - 16:30</div>
+                        <div class="title">สตรีทอาร์ต Huangjueping</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Huangjueping+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('黄桷坪涂鸦艺术街', 'Huángjuépíng', 'สตรีทอาร์ต หวงเจวี๋ยผิง')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚕 เดินทาง: นั่ง CRT สาย 2 ลง Yangjiaping ต่อแท็กซี่</span>
+                            <span>💰 ค่ารถ: ~24 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">17:30 - 20:30</div>
+                        <div class="title">จุดชมวิวเขา Nanshan Yikeshu และทานมื้อค่ำ (แนะนำหม้อไฟบนเขา Pipa Yuan)</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Nanshan+Yikeshu+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('南山一棵树观景台', 'Nánshān Yīkēshù', 'จุดชมวิวเขานานชาน')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚕 เดินทาง: นั่งแท็กซี่จากตัวเมืองขึ้นเขา (ใช้แอป Didi)</span>
+                            <span>💰 ค่ารถไป-กลับ: ~60 หยวน / ค่าเข้า: 30 หยวน / ค่าอาหาร: ~150 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <button class="btn-add-task" onclick="openAddTaskModal('day3')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+
+            <div class="day-group" id="day4">
+                <div class="day-title">📍 Day 4: วันจันทร์ที่ 29 มิ.ย. (มหานครแห่งอนาคต)</div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">09:30 - 10:30</div>
+                        <div class="title">พิสูจน์ความมึนที่ลานกุยซิงโหลว (Kuixing Lou)</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Kuixing+Lou+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('魁星楼', 'Kuíxīng Lóu', 'ลานกุยซิงโหลว')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚶 เดินเท้าจาก Jiefangbei</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">11:00 - 14:00</div>
+                        <div class="title">ตึกเรือใบ Raffles City และสกายบริดจ์ (The Crystal) ทานมื้อเที่ยงในห้าง</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Raffles+City+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('来福士广场', 'Láifúshì Guǎngchǎng', 'ตึกแรฟเฟิลส์ซิตี้')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 1 ไปลง Chaotianmen</span>
+                            <span>💰 ค่าเข้าสกายบริดจ์: ~120 หยวน / ค่าอาหาร: ~80 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">14:30 - 17:00</div>
+                        <div class="title">เสพศิลป์ที่ Testbed 2 (E'ling Park)</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Testbed+2+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('鹅岭二厂', 'Élǐng Èrchǎng', 'เทสต์เบด ทู')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 1 ลง E'ling ทางออก 2A แล้วเดินขึ้นเนิน</span>
+                            <span>💰 ค่ารถ: 3 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">19:30 - 21:00</div>
+                        <div class="title">ล่องเรือ Two Rivers Cruise ชมวิวกลางคืน และทานสตรีทฟู้ดมื้อค่ำ</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Chaotianmen+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('朝天门码头', 'Cháotiānmén Mǎtóu', 'ท่าเรือเฉาเทียนเหมิน')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚢 เดินทาง: ขึ้นเรือที่ท่าเรือ Chaotianmen</span>
+                            <span>💰 ค่าตั๋วเรือ: ~150 หยวน / ค่าอาหาร: ~50 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <button class="btn-add-task" onclick="openAddTaskModal('day4')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+
+             <div class="day-group" id="day5">
+                <div class="day-title">📍 Day 5: วันอังคารที่ 30 มิ.ย. (เก็บตก ช้อปปิ้ง เตรียมบอกลา)</div>
+                
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">10:00 - 14:00</div>
+                        <div class="title">ช้อปปิ้งย่านวัยรุ่น Guanyinqiao ทานมื้อเที่ยงตะลุยของกินชั้นใต้ดินห้าง</div>
+                        <div class="action-tags">
+                            <a href="https://maps.apple.com/?q=Guanyinqiao+Chongqing" target="_blank" class="btn-tag">📍 Map</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('观音桥步行街', 'Guānyīnqiáo', 'ถนนคนเดินกวนอินเฉียว')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 3 ลงสถานี Guanyinqiao</span>
+                            <span>💰 ค่าอาหาร: ~80 หยวน / ค่ารถ: ~4 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">14:00 - 16:00</div>
+                        <div class="title">นวดเท้าแก้เมื่อย (แนะนำมาก เพราะเดินเยอะมาหลายวัน)</div>
+                        <div class="desc">
+                            <span>💰 ค่าบริการ: ~100-150 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">16:30 - 18:00</div>
+                        <div class="title">กลับไปรับกระเป๋าที่โรงแรม และเดินทางไปสนามบิน CKG</div>
+                        <div class="action-tags">
+                            <button class="btn-tag cn" onclick="openFlashcard('重庆江北国际机场', 'Chóngqìng Jiāngběi Jīchǎng', 'สนามบินฉงชิ่งเจียงเป่ย')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        </div>
+                        <div class="desc">
+                            <span>🚆 เดินทาง: นั่ง CRT สาย 10 ยิงยาวไปสนามบิน</span>
+                            <span>💰 ค่ารถ: ~7 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">18:00 - 21:30</div>
+                        <div class="title">เช็คอิน, มื้อค่ำที่สนามบิน และเตรียมบินกลับกรุงเทพฯ ด้วยความทรงจำสุดประทับใจ!</div>
+                        <div class="desc">
+                            <span>💰 ค่าอาหาร: ~60 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <button class="btn-add-task" onclick="openAddTaskModal('day5')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+
+        </div>
+
+        <div class="bottom-bar">
+            <button class="btn-reset" onclick="resetApp()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                รีเซ็ตแผนกลับเป็น 0
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="flashcard-modal" onclick="closeModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flashcard-prefix">我要去... (ฉันต้องการไปที่)</div>
+            <h2 class="flashcard-cn" id="fc-cn">洪崖洞</h2>
+            <div class="flashcard-py" id="fc-py">Hóngyádòng</div>
+            <div class="flashcard-th" id="fc-th">หงหยาต้ง</div>
+            <button class="btn-close" onclick="closeModals()">ปิดหน้าต่าง (关闭)</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="converter-modal" onclick="closeModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="converter-title">💱 แปลงเงิน (CNY ➔ THB)</div>
+            <div class="conv-rate" style="font-size: 13px; color: var(--text-gray); margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 6px;">
+                เรทปัจจุบัน: 1 หยวน = <input type="number" id="conv-rate-val" step="0.01" oninput="calcConv()" style="width: 45px; background: transparent; border: 1px solid var(--text-gray); color: var(--text-dark); border-radius: 6px; text-align: center; padding: 2px; font-family: 'Kanit';"> บาท
+                <button id="btn-refresh-rate" class="btn-refresh" onclick="manualFetchRate()" title="อัปเดตเรทล่าสุด">🔄</button>
+            </div>
+            <div id="api-status-msg" class="api-status"></div>
+            
+            <div class="input-group">
+                <span style="font-size: 20px; font-weight: 600; color: var(--text-gray); margin-right: 15px;">¥</span>
+                <input type="number" id="conv-cny" placeholder="ใส่จำนวนเงิน (หยวน)" oninput="calcConv()" style="font-size: 20px; font-weight: 600;">
+            </div>
+            <div style="font-size: 32px; font-weight: 700; color: #2ed573; margin: 10px 0 20px 0;">≈ <span id="conv-thb">0</span> ฿</div>
+            <button class="btn-close" onclick="closeModals()">ปิด</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="add-task-modal" onclick="closeModals()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-title">📝 เพิ่มรายการของคุณเอง</div>
+            
+            <div class="input-group" id="custom-time-group" style="margin-bottom: 10px;">
+                <input type="text" id="custom-time" placeholder="เวลา (เช่น 08:00 - 09:00)">
+            </div>
+            <div class="input-group" style="margin-bottom: 10px;">
+                <input type="text" id="custom-title" placeholder="ชื่อเรื่อง (จำเป็น)">
+            </div>
+            <div class="input-group" style="margin-bottom: 20px;">
+                <textarea id="custom-desc" placeholder="รายละเอียด (ไม่ใส่ก็ได้)" style="resize: vertical; min-height: 60px;"></textarea>
+            </div>
+            
+            <input type="hidden" id="custom-day-id">
+            <button class="btn-primary" onclick="saveCustomTask()">บันทึกรายการ</button>
+            <button class="btn-close" onclick="closeModals()">ยกเลิก</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. นำรหัส Firebase Config มาใส่ตรงนี้
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbQJOMlzv9PymTmUx4FvY-s7RC-p1wm3w",
+            authDomain: "chongqing-trip.firebaseapp.com",
+            databaseURL: "https://chongqing-trip-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "chongqing-trip",
+            storageBucket: "chongqing-trip.firebasestorage.app",
+            messagingSenderId: "592768189299",
+            appId: "1:592768189299:web:c48f8bffa155cf2adffb06",
+            measurementId: "G-4JF6W6XN5R"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const tripRef = db.ref('tripData');
+
+        // ==========================================
+        // 2. ตัวแปรเก็บสถานะในแอป
+        // ==========================================
+        let totalExpense = 0;
+        let completedCards = [];
+        let currentExchangeRate = 5.1;
+        let isDarkMode = localStorage.getItem('cq_darkmode') === 'true'; // เรื่องส่วนตัว ให้จำในเครื่อง
+
+        // เริ่มต้นแอป
+        window.onload = () => {
+            if(isDarkMode) enableDarkMode();
+            
+            // รอฟังการเปลี่ยนแปลงจาก Firebase (Real-time Sync)
+            tripRef.on('value', (snapshot) => {
+                // เอาม่านโหลดออกเมื่อข้อมูลมาถึง
+                document.getElementById('sync-overlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('sync-overlay').style.display = 'none', 500);
+
+                const data = snapshot.val() || {
+                    expense: 0,
+                    tasks: [],
+                    customTasks: {},
+                    rate: 5.1
+                };
+
+                // อัปเดตตัวแปรในแอปให้ตรงกับ Cloud
+                totalExpense = data.expense || 0;
+                completedCards = data.tasks || [];
+                currentExchangeRate = data.rate || 5.1;
+                
+                document.getElementById('conv-rate-val').value = currentExchangeRate;
+
+                // 1. ล้าง Custom Task เก่าบนหน้าจอทิ้งก่อน (กันซ้ำ)
+                document.querySelectorAll('.custom-item').forEach(el => el.remove());
+                
+                // 2. วาด Custom Task ใหม่ที่มาจาก Cloud
+                if (data.customTasks) {
+                    Object.values(data.customTasks).forEach(task => renderSingleCustomTask(task));
+                }
+
+                // 3. ผูกคำสั่งปุ่มและการติ๊กถูกใหม่ทั้งหมด (เพื่อให้หน้าจอสอดคล้องกับ Cloud)
+                bindAllTasks();
+                
+                // 4. อัปเดตตัวเลข
+                updateUI();
+            });
+        };
+
+        // ==========================================
+        // 3. ระบบ Custom Tasks (Sync กับ Firebase)
+        // ==========================================
+        function openAddTaskModal(dayId) {
+            document.getElementById('custom-day-id').value = dayId;
+            const timeGroup = document.getElementById('custom-time-group');
+            if (dayId === 'pre-trip') timeGroup.style.display = 'none';
+            else timeGroup.style.display = 'flex';
+            
+            document.getElementById('add-task-modal').classList.add('active');
+        }
+
+        function saveCustomTask() {
+            const time = document.getElementById('custom-time').value.trim();
+            const title = document.getElementById('custom-title').value.trim();
+            const desc = document.getElementById('custom-desc').value.trim();
+            const dayId = document.getElementById('custom-day-id').value;
+
+            if(!title) { alert('กรุณาใส่ชื่อเรื่องด้วยครับ'); return; }
+
+            const newTask = { 
+                id: Date.now().toString(), 
+                dayId: dayId, 
+                time: dayId === 'pre-trip' ? '' : time, 
+                title: title, 
+                desc: desc 
+            };
+            
+            // ส่งขึ้น Firebase
+            db.ref('tripData/customTasks/' + newTask.id).set(newTask);
+
+            document.getElementById('custom-time').value = '';
+            document.getElementById('custom-title').value = '';
+            document.getElementById('custom-desc').value = '';
+            closeModals();
+        }
+
+        function renderSingleCustomTask(task) {
+            const dayContainer = document.getElementById(task.dayId);
+            if(!dayContainer) return;
+            
+            const btnAdd = dayContainer.querySelector('.btn-add-task');
+            const card = document.createElement('div');
+            card.className = 'activity-card task-item custom-item';
+            card.id = `ct-${task.id}`;
+            
+            const timeHtml = task.time ? `<div class="time-badge">${task.time}</div>` : '';
+            const descHtml = task.desc ? `<div class="desc"><span>${task.desc}</span></div>` : '';
+            const expenseHtml = task.dayId !== 'pre-trip' ? `<div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>` : '';
+
+            card.innerHTML = `
+                <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                <div class="activity-info">
+                    ${timeHtml}
+                    <div class="title-custom">
+                        <span style="flex-grow: 1; font-weight:500; font-size:15px;">${task.title}</span>
+                        <button class="btn-delete-custom" onclick="deleteCustomTask('${task.id}', '${task.title}', event)">[ลบ]</button>
+                    </div>
+                    ${descHtml}
+                    ${expenseHtml}
+                </div>
+            `;
+            dayContainer.insertBefore(card, btnAdd);
+        }
+
+        function deleteCustomTask(id, titleText, event) {
+            event.stopPropagation();
+            if(!confirm('ต้องการลบรายการนี้ใช่ไหม?')) return;
+            
+            // ส่งคำสั่งลบให้ Firebase
+            db.ref('tripData/customTasks/' + id).remove();
+            
+            // ถ้าเคยติ๊กถูกไว้ ให้เอาออกด้วย
+            if (completedCards.includes(titleText)) {
+                completedCards = completedCards.filter(t => t !== titleText);
+                db.ref('tripData/tasks').set(completedCards);
+            }
+        }
+
+        // ==========================================
+        // 4. ระบบเช็คติ๊กถูก & คำนวณเงิน (Sync กับ Firebase)
+        // ==========================================
+        function bindAllTasks() {
+            const cards = document.querySelectorAll('.task-item');
+            cards.forEach(card => {
+                let titleElement = card.querySelector('.title') || card.querySelector('.title-custom span');
+                let titleText = titleElement.innerText.replace('[ลบ]', '').trim();
+                
+                const checkbox = card.querySelector('.task-checkbox');
+                
+                // ถอด Event เก่า ใส่ Event ใหม่
+                const newCheckbox = checkbox.cloneNode(true);
+                checkbox.parentNode.replaceChild(newCheckbox, checkbox);
+                
+                newCheckbox.addEventListener('change', function() { completeTask(this, titleText); });
+                
+                // เปลี่ยนสถานะ UI ตาม Cloud
+                if(completedCards.includes(titleText)) {
+                    card.classList.add('completed');
+                    newCheckbox.checked = true;
+                } else {
+                    card.classList.remove('completed');
+                    newCheckbox.checked = false;
+                }
+            });
+        }
+
+        function completeTask(checkbox, title) {
+            const card = checkbox.closest('.task-item');
+            if(checkbox.checked) {
+                const expenseInput = card.querySelector('.actual-expense');
+                let cost = expenseInput && expenseInput.value ? parseFloat(expenseInput.value) : 0;
+                if (isNaN(cost) || cost < 0) cost = 0;
+
+                setTimeout(() => {
+                    // ดึงก้อนเก่ามาเติม
+                    let newTasks = [...completedCards];
+                    if(!newTasks.includes(title)) {
+                        newTasks.push(title);
+                    }
+                    
+                    // ส่งข้อมูลใหม่ขึ้น Firebase (แล้ว UI จะอัปเดตอัตโนมัติเอง)
+                    db.ref('tripData/tasks').set(newTasks);
+                    db.ref('tripData/expense').set(totalExpense + cost);
+                }, 400);
+            }
+        }
+
+        const updateUI = () => {
+            const totalItems = document.querySelectorAll('.task-item').length;
+            
+            // อัปเดตเงิน
+            document.getElementById('total-spent').innerText = totalExpense.toLocaleString('th-TH');
+            let thbExpense = Math.round(totalExpense * currentExchangeRate);
+            document.getElementById('total-spent-thb').innerText = '≈ ' + thbExpense.toLocaleString('th-TH');
+
+            // อัปเดต %
+            const percentage = totalItems === 0 ? 0 : Math.round((completedCards.length / totalItems) * 100);
+            document.getElementById('trip-progress').style.width = percentage + '%';
+            document.getElementById('progress-percent').innerText = percentage;
+        };
+
+        // ==========================================
+        // 5. ระบบลูกเล่นอื่นๆ ของเว็บ (UI)
+        // ==========================================
+        function switchTab(event, dayId) {
+            document.querySelectorAll('.day-group').forEach(group => group.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(dayId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            event.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            if(isDarkMode) enableDarkMode();
+            else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('theme-toggle').innerText = '🌙';
+            }
+            localStorage.setItem('cq_darkmode', isDarkMode);
+        }
+        function enableDarkMode() {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-toggle').innerText = '☀️';
+        }
+
+        function openFlashcard(cn, py, th) {
+            document.getElementById('fc-cn').innerText = cn;
+            document.getElementById('fc-py').innerText = py;
+            document.getElementById('fc-th').innerText = th;
+            document.getElementById('flashcard-modal').classList.add('active');
+        }
+        
+        async function manualFetchRate() {
+            const btn = document.getElementById('btn-refresh-rate');
+            const statusMsg = document.getElementById('api-status-msg');
+            
+            btn.classList.add('spinning');
+            statusMsg.style.color = 'var(--text-gray)';
+            statusMsg.innerText = 'กำลังดึงเรทล่าสุด...';
+
+            try {
+                const response = await fetch('https://open.er-api.com/v6/latest/CNY');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.rates && data.rates.THB) {
+                        let newRate = Math.round(data.rates.THB * 100) / 100;
+                        document.getElementById('conv-rate-val').value = newRate;
+                        
+                        // ส่งเรทขึ้น Firebase ให้เพื่อนทุกคนได้เรทเดียวกัน
+                        db.ref('tripData/rate').set(newRate);
+                        calcConv(); 
+                        
+                        statusMsg.style.color = '#2ed573';
+                        statusMsg.innerText = 'อัปเดตเรทล่าสุดสำเร็จ!';
+                    }
+                } else throw new Error('API Error');
+            } catch (error) {
+                statusMsg.style.color = '#ff4757';
+                statusMsg.innerText = 'ไม่สามารถดึงข้อมูลได้ (โปรดเช็กอินเทอร์เน็ต)';
+            }
+
+            setTimeout(() => {
+                btn.classList.remove('spinning');
+                setTimeout(() => { statusMsg.innerText = ''; }, 3000);
+            }, 600);
+        }
+
+        function openConverter() {
+            document.getElementById('converter-modal').classList.add('active');
+            setTimeout(() => document.getElementById('conv-cny').focus(), 100);
+        }
+        
+        function calcConv() {
+            let cny = parseFloat(document.getElementById('conv-cny').value) || 0;
+            let rate = parseFloat(document.getElementById('conv-rate-val').value) || 0;
+            
+            // ส่งเรทที่แก้เองขึ้น Firebase
+            if (rate !== currentExchangeRate) {
+                db.ref('tripData/rate').set(rate);
+            }
+
+            document.getElementById('conv-thb').innerText = Math.round(cny * rate).toLocaleString('th-TH');
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
+        }
+
+        function resetApp() {
+            if(!confirm("รีเซ็ตการเดินทางและ 'ยอดใช้จ่าย' ทั้งหมดกลับเป็น 0 ใช่ไหม? (รายการที่คุณสร้างเองจะไม่ถูกลบ)")) return;
+            
+            // ลบแค่รายการที่ติ๊กแล้ว กับ ยอดเงินทิ้ง (ไม่ลบ Custom Task)
+            db.ref('tripData/tasks').remove();
+            db.ref('tripData/expense').set(0);
+            
+            // ล้างช่องกรอกเงิน
+            document.querySelectorAll('.actual-expense').forEach(input => input.value = '');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
