@@ -1183,30 +1183,64 @@
         let isDarkMode = localStorage.getItem('cq_darkmode') === 'true';
 
         window.onload = () => {
-            if(isDarkMode) enableDarkMode();
-            
-            tripRef.on('value', (snapshot) => {
-                document.getElementById('sync-overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('sync-overlay').style.display = 'none', 500);
 
-                const data = snapshot.val() || { expense: 0, tasks: [], customTasks: {}, rate: 5.1 };
+    // กันจอขาวค้างบน Android
+    setTimeout(() => {
+        const overlay = document.getElementById('sync-overlay');
 
-                totalExpense = data.expense || 0;
-                completedCards = data.tasks || [];
-                currentExchangeRate = data.rate || 5.1;
-                
-                document.getElementById('conv-rate-val').value = currentExchangeRate;
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+    }, 3000);
 
-                document.querySelectorAll('.custom-item').forEach(el => el.remove());
-                
-                if (data.customTasks) {
-                    Object.values(data.customTasks).forEach(task => renderSingleCustomTask(task));
-                }
+    if(isDarkMode) enableDarkMode();
 
-                bindAllTasks();
-                updateUI();
-            });
+    tripRef.on('value', (snapshot) => {
+
+        const overlay = document.getElementById('sync-overlay');
+
+        if (overlay) {
+            overlay.style.opacity = '0';
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        const data = snapshot.val() || {
+            expense: 0,
+            tasks: [],
+            customTasks: {},
+            rate: 5.1
         };
+
+        totalExpense = data.expense || 0;
+        completedCards = data.tasks || [];
+        currentExchangeRate = data.rate || 5.1;
+
+        document.getElementById('conv-rate-val').value = currentExchangeRate;
+
+        document.querySelectorAll('.custom-item').forEach(el => el.remove());
+
+        if (data.customTasks) {
+            Object.values(data.customTasks).forEach(task => renderSingleCustomTask(task));
+        }
+
+        bindAllTasks();
+        updateUI();
+
+    }, (error) => {
+
+        // ถ้า Firebase พัง ก็อย่าให้จอขาว
+        console.error(error);
+
+        const overlay = document.getElementById('sync-overlay');
+
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+    });
+};
 
         function switchTab(event, dayId) {
             // 1. สั่งเด้งขึ้นบนสุด "ก่อน" เปลี่ยนแท็บ เพื่อไม่ให้ Layout พัง
