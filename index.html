@@ -27,17 +27,14 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: 'Kanit', sans-serif; background-color: #000; margin: 0; 
-            display: flex; justify-content: center; 
-            transition: background-color 0.3s, color 0.3s; 
-        }
+        
+        body { font-family: 'Kanit', sans-serif; background-color: #000; margin: 0; display: flex; justify-content: center; transition: background-color 0.3s; }
 
         .app-container {
             width: 100%; max-width: 430px; background-color: var(--bg-main); 
             min-height: 100vh; min-height: 100dvh; position: relative; 
             box-shadow: 0 0 20px rgba(0,0,0,0.5); padding-bottom: calc(90px + var(--safe-bottom)); 
-            transition: background-color 0.3s, color 0.3s; 
+            transition: background-color 0.3s; 
         }
 
         /* Header */
@@ -45,13 +42,6 @@
             background: var(--header-bg); color: white; padding: calc(20px + var(--safe-top)) 20px 20px 20px;
             position: sticky; top: 0; z-index: 100; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            will-change: transform;
-            /* Android fix */
-            isolation: isolate;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
         }
         .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .header-titles h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
@@ -62,43 +52,29 @@
             font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white;
         }
 
-        /* Dashboard Style Total Expense Box */
         .total-box {
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px; padding: 18px 16px; text-align: center;
-            margin-bottom: 15px; display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px; padding: 18px 16px; text-align: center; margin-bottom: 15px; 
+            display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .total-box .label { font-size: 14px; font-weight: 400; opacity: 0.9; margin-bottom: 5px; }
-        .total-box .primary-amt {
-            font-size: 38px; font-weight: 700; color: #f1c40f; text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            display: flex; align-items: baseline; justify-content: center; line-height: 1.1; margin-bottom: 8px;
-        }
-        .total-box .primary-amt small { font-size: 16px; margin-left: 6px; color: white; font-weight: 500; text-shadow: none; }
-        .total-box .secondary-amt {
-            background: rgba(46, 213, 115, 0.2); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.5);
-            padding: 4px 14px; border-radius: 20px; font-size: 16px; font-weight: 600; display: inline-block;
-        }
+        .total-box .primary-amt { font-size: 38px; font-weight: 700; color: #f1c40f; line-height: 1.1; margin-bottom: 8px; }
+        .total-box .secondary-amt { background: rgba(46, 213, 115, 0.2); color: #2ed573; padding: 4px 14px; border-radius: 20px; font-size: 16px; font-weight: 600; }
 
-        .progress-text { font-size: 11px; text-align: right; margin-bottom: 5px; font-weight: 600; opacity: 0.9;}
         .progress-container { background: rgba(0,0,0,0.2); border-radius: 10px; height: 6px; width: 100%; margin-bottom: 20px; overflow: hidden; }
         .progress-bar { background: #2ed573; height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 10px; }
 
-        /* Day Tabs & Scrollbar */
-        .day-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 12px; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.4) rgba(255,255,255,0.1); }
-        .day-tabs::-webkit-scrollbar { height: 6px; }
-        .day-tabs::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-        .day-tabs::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.5); border-radius: 10px; }
-        body.dark-mode .day-tabs::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.5); }
-        .tab-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-family: 'Kanit'; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .tab-btn.active { background: #ffffff; color: #e94057; border-color: #ffffff; font-weight: 600; }
+        /* Day Tabs */
+        .day-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 12px; scrollbar-width: none; }
+        .day-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-family: 'Kanit'; white-space: nowrap; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+        .tab-btn.active { background: #ffffff; color: #e94057; font-weight: 600; border-color: #ffffff; }
 
-        /* Content */
+        /* Content - ลบแอนิเมชันที่ทำให้ Android จอขาวออก */
         .content { padding: 20px 15px; }
-        .day-group { display: none; }
+        .day-group { display: none; animation: simpleFade 0.3s ease; }
         .day-group.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes simpleFade { from { opacity: 0; } to { opacity: 1; } }
+
         .day-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; }
         .day-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--primary); border-radius: 4px; margin-right: 10px; }
 
@@ -106,9 +82,9 @@
         .activity-card {
             background: var(--card-bg); border-radius: 16px; padding: 20px 16px; margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; gap: 15px; align-items: flex-start;
-            transition: all 0.4s ease; overflow: hidden; max-height: 1200px; opacity: 1; border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02); overflow: hidden;
         }
-        .activity-card.completed { max-height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; opacity: 0; border: none; overflow: hidden;}
+        .activity-card.completed { display: none; }
 
         .checkbox-wrapper { position: relative; min-width: 24px; height: 24px; cursor: pointer; margin-top: 2px;}
         .checkbox-wrapper input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
@@ -142,38 +118,23 @@
         .title-custom { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 10px; }
         .btn-delete-custom { color: #ff4757; font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Kanit'; padding: 0; margin-top: 2px; flex-shrink: 0;}
 
-        /* Bottom Reset Bar — Android-safe: ใช้ left/right + margin แทน transform */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            max-width: 430px;
-            margin-left: auto;
-            margin-right: auto;
-            background: rgba(255,255,255,0.9);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            padding: 15px 20px calc(15px + var(--safe-bottom));
-            border-top: 1px solid rgba(0,0,0,0.05);
-            z-index: 100;
-            /* ไม่ใช้ transform เพื่อหลีกเลี่ยง bug Android */
+        /* Bottom Reset Bar */
+        .bottom-bar { 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 430px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); 
+            padding: 15px 20px calc(15px + var(--safe-bottom)); border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
         }
         body.dark-mode .bottom-bar { background: rgba(30,30,30,0.9); border-color: rgba(255,255,255,0.05); }
         .btn-reset { background: var(--input-bg); color: var(--text-dark); border: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
 
         /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
         .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(20px); transition: 0.3s; color: var(--text-dark); max-height: 85vh; overflow-y: auto;}
         .modal-overlay.active .modal-content { transform: translateY(0); }
-
         .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; }
         .input-group { background: var(--input-bg); border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: center;}
         .input-group input, .input-group textarea { border: none; background: transparent; font-size: 15px; color: var(--text-dark); outline: none; width: 100%; font-family: 'Kanit'; }
-        
         .btn-primary { background: #ff4757; color: white; border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; font-family: 'Kanit'; margin-bottom: 8px;}
         .btn-close { background: var(--input-bg); color: var(--text-dark); border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; font-family: 'Kanit'; }
 
@@ -381,14 +342,32 @@
                 <div class="activity-card task-item">
                     <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
                     <div class="activity-info">
-                        <div class="time-badge">16:00 - 18:00</div>
+                        <div class="time-badge">16:00 - 16:30</div>
                         <div class="title">กลับโรงแรม เช็คอิน จิงมู่ซินเยว่</div>
                         <div class="action-tags">
                             <button class="btn-tag guide" onclick="openHotelGuide()">📑 วิธีเข้าโรงแรม (กันหลง)</button>
                             <a href="https://uri.amap.com/search?keyword=重庆嘉陵江滨江路112号" target="_blank" class="btn-tag amap">📍 Amap</a>
                             <button class="btn-tag cn" onclick="openFlashcard('嘉陵江滨江路112号 (底层马路)', 'Jiālíngjiāng Bīnjiānglù 112 hào', 'ถนนเจียหลิงเจียงปินเจียง เบอร์ 112 (ถนนเส้นล่าง)')">🇨🇳 ยื่นให้แท็กซี่</button>
                         </div>
-                        <div class="desc"><span>พักผ่อนเก็บของ ชาร์จแบตเตรียมลุยต่อ</span></div>
+                        <div class="desc"><span>พักผ่อนเก็บของเตรียมลุยต่อ</span></div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">16:30 - 18:00</div>
+                        <div class="title">เดินไป วัดหลัวฮั่น (Arhat Temple)</div>
+                        <div class="action-tags">
+                            <button class="btn-tag guide" onclick="document.getElementById('arhat-transport-modal').classList.add('active')">📑 วิธีเดินทางไปวัด</button>
+                            <a href="https://uri.amap.com/search?keyword=罗汉寺" target="_blank" class="btn-tag amap">📍 Amap</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=罗汉寺+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>
+                        </div>
+                        <div class="desc">
+                            <span>⛩️ วัดโบราณพันปีที่มีรูปปั้นอรหันต์ 500 องค์ ท่ามกลางตึกสูง</span>
+                            <span>💰 แพลน: ค่าเข้า 20 หยวน (ได้ธูปฟรี)</span>
+                        </div>
                         <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
                     </div>
                 </div>
@@ -890,7 +869,7 @@
                         <div class="time-badge">16:30 - 18:00</div>
                         <div class="title">กลับไปรับกระเป๋าที่โรงแรม และเดินทางไปสนามบิน CKG</div>
                         <div class="action-tags">
-                            <a href="https://uri.amap.com/search?keyword=重庆江北国际機場" target="_blank" class="btn-tag amap">📍 Amap</a>
+                            <a href="https://uri.amap.com/search?keyword=重庆江北国际机场" target="_blank" class="btn-tag amap">📍 Amap</a>
                             <a href="https://www.google.com/maps/search/?api=1&query=重庆江北国际机场" target="_blank" class="btn-tag gmap">📍 Google</a>
                             <button class="btn-tag cn" onclick="openFlashcard('重庆江北国际机场', 'Chóngqìng Jiāngběi Jīchǎng', 'สนามบินฉงชิ่งเจียงเป่ย')">🇨🇳 ยื่นให้แท็กซี่</button>
                         </div>
@@ -957,13 +936,16 @@
             <p style="font-size: 14px; margin-top: 0;"><strong>1. รถไฟใต้ดิน (CRT) - ถูกที่สุด</strong><br>
             <span style="color: var(--text-gray);">• ค่าโดยสาร: ประมาณ 6-7 หยวน จ่ายตามระยะทาง<br>
             • วิธีจ่าย: ใช้แอป Alipay (เลือกเมนู Transport) สแกนเข้า-ออกได้เลย หรือหยอดเหรียญที่ตู้ขายตั๋วอัตโนมัติ</span></p>
+            
             <p style="font-size: 14px;"><strong>2. รถบัสสนามบิน (Airport Shuttle Bus K01)</strong><br>
             <span style="color: var(--text-gray);">• ค่าโดยสาร: 15 หยวน (ตลอดสาย)<br>
             • รายละเอียด: ส่งตรงถึงย่าน Jiefangbei เหมาะสำหรับคนที่มีกระเป๋าเดินทางใหญ่และไม่อยากลากขึ้นลงสถานี</span></p>
+            
             <p style="font-size: 14px;"><strong>3. รถแท็กซี่ หรือ DiDi</strong><br>
             <span style="color: var(--text-gray);">• ช่วงกลางวัน: ประมาณ 50-60 หยวน<br>
             • ช่วงกลางคืน (หลัง 23:00): อาจพุ่งไปถึง 70-80 หยวน<br>
             • หมายเหตุ: แนะนำให้ดูราคาที่โชว์ในแอปเป็นหลักครับ</span></p>
+            
             <p style="color: #d35400; font-size: 13px;">💡 <strong>คำแนะนำ:</strong> หากเดินทางคนเดียวและกระเป๋าไม่หนัก รถไฟใต้ดินคุ้มที่สุด แต่ถ้ามากันหลายคนเรียก DiDi จะเฉลี่ยค่าตัวแล้วคุ้มค่าความสะดวก ไปส่งถึงหน้าตึกเลยครับ</p>
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
@@ -973,16 +955,19 @@
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">📍 วิธีเดินทางไปวัดหลัวฮั่น</div>
             <p style="color: #d35400; font-size: 13px; text-align: center; margin-bottom: 15px;">จากโรงแรมจิงมู่ซินเยว่ ไป วัดหลัวฮั่น ถือว่าใกล้มากครับ เลือกไปได้ 2 วิธี</p>
+
             <p style="font-size: 14px; margin-top: 0;"><strong>1. เดินเท้า (แนะนำที่สุด)</strong><br>
             <span style="color: var(--text-gray);">สะดวกรวดเร็ว ระยะทาง 600-800m ใช้เวลา 8-10 นาที<br>
             • ขึ้นลิฟต์โรงแรมไป <strong>ชั้น 22</strong> ทะลุลานกุยซิงโหลว<br>
             • เดินมุ่งหน้าไปถนนคนเดิน Jiefangbei<br>
             • วัดจะตั้งอยู่ท่ามกลางตึกสูง เดินตามแผนที่ได้ง่ายมาก</span></p>
+            
             <p style="font-size: 14px;"><strong>2. รถไฟใต้ดิน (CRT)</strong><br>
             <span style="color: var(--text-gray);">เหมาะสำหรับเวลาอยู่ชั้น 6 แล้วไม่อยากเดินขึ้นเนิน<br>
             • นั่งสาย 2 จากสถานี Linjiangmen<br>
             • ไปลงสถานี Xiaoshizi (นั่งแค่ 1 สถานี)<br>
             • ออก <strong>ทางออก 6 หรือ 7</strong> เดินนิดเดียวเจอทางเข้าวัดเลย</span></p>
+            
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
@@ -990,18 +975,25 @@
     <div class="modal-overlay" id="food-guide-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">🍜 ร้านอาหารแนะนำ (มื้อค่ำ)</div>
+
             <p style="font-size: 14px; margin-top: 0;"><strong>1. สตรีทฟู้ด ถนน Bayi Road (Hao Chi Jie)</strong><br>
             <span style="color: var(--text-gray);">ร้าน Hao You Lai Suan La Fen (好又来酸辣粉) ซุปเปรี้ยวเผ็ดระดับตำนาน รันคิวไวมาก ราคา 10-15 หยวน</span></p>
+            
             <p style="font-size: 14px;"><strong>2. ของเสียบไม้ทอด/ต้ม (Chuan Chuan)</strong><br>
             <span style="color: var(--text-gray);">ร้านเล็กๆ ในตรอกแถว Jiefangbei คิดราคาตามจำนวนไม้ ราคา ~30-50 หยวน รสชาติหมาล่าเข้มข้นเหมือนหม้อไฟใหญ่</span></p>
+            
             <p style="font-size: 14px;"><strong>3. บุฟเฟต์ Pudabu Seoul Self-Service</strong><br>
             <span style="color: var(--text-gray);">ชั้น 6 ตึก Maxim ราคา 79 หยวน บุฟเฟต์ปิ้งย่าง/อาหารเกาหลี-จีน รีวิวดีเรื่องความคุ้มค่าสุดๆ</span></p>
+
             <p style="font-size: 14px;"><strong>4. Shao You Lao Huo Guo (少友老火锅)</strong><br>
             <span style="color: var(--text-gray);">เพชรในตึกแถว! รสชาติเข้มข้น หอมน้ำมันเนื้อ วัตถุดิบสดมาก เฉลี่ย 60-80 หยวน/คน (ใกล้ตึกกุ้ยซิงโหลวมาก)</span></p>
+
             <p style="font-size: 14px;"><strong>5. Zhou Shixiong Hot Pot (周师兄大刀腰片火锅)</strong><br>
             <span style="color: var(--text-gray);">ร้านชื่อดังระดับท็อป เมนูเด็ดคือ "ตับหมูแผ่นยักษ์" บริการระดับ Haidilao เปิดดึก เฉลี่ย 80-100 หยวน/คน</span></p>
+
             <p style="font-size: 14px;"><strong>6. Tian Bang Lao Huo Guo (天棒老火锅)</strong><br>
             <span style="color: var(--text-gray);">สายลุยชอบบรรยากาศบ้านๆ สามยอดปรารถนา (ผ้าขี้ริ้ว, ไส้เป็ด, หลอดลมวัว) กรอบและสดมาก เฉลี่ย 70-90 หยวน/คน</span></p>
+
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
@@ -1009,20 +1001,25 @@
     <div class="modal-overlay" id="return-home-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">📍 วิธีกลับบ้าน (จากหงหยาต้ง)</div>
+            
             <p style="font-size: 14px; margin-top: 0;"><strong>1. เดินเท้า (แนะนำที่สุด)</strong><br>
-            <span style="color: var(--text-gray);">ถ้ายังพอมีแรงเหลือ การเดินกลับเป็นวิธีที่สะดวกที่สุด<br>
+            <span style="color: var(--text-gray);">ถ้าคุณธงชัยยังพอมีแรงเหลือ การเดินกลับเป็นวิธีที่สะดวกที่สุดครับ<br>
             • ระยะทาง: ประมาณ 800 เมตร - 1 กิโลเมตร<br>
-            • เส้นทาง: จากหงหยาต้ง ให้ขึ้นลิฟต์หรือบันไดมาที่ <strong>ชั้น 11</strong> (ชั้นที่เป็นถนนใหญ่) เดินตามป้ายหรือ Google Maps มุ่งหน้าไปทาง <strong>Jiefangbei Monument (หอนาฬิกา)</strong><br>
-            • ข้อดี: ไม่ต้องเบียดคนบนรถไฟฟ้า และได้เดินดูแสงสีเมืองตอนกลางคืนด้วย</span></p>
+            • เส้นทาง: จากหงหยาต้ง ให้ขึ้นลิฟต์หรือบันไดขึ้นมาที่ <strong>ชั้น 11</strong> (ชั้นที่เป็นถนนใหญ่) จากนั้นเดินตามป้ายหรือ Google Maps มุ่งหน้าไปทาง <strong>Jiefangbei Monument</strong> (หอนาฬิกา) โรงแรมจะตั้งอยู่ไม่ไกลจากบริเวณนั้นครับ<br>
+            • ข้อดี: ไม่ต้องเบียดคนบนรถไฟฟ้าหรือรอคิวนาน และได้เดินดูแสงสีริมถนนตอนกลางคืนด้วยครับ</span></p>
+
             <p style="font-size: 14px;"><strong>2. รถไฟใต้ดิน (MRT)</strong><br>
             <span style="color: var(--text-gray);">ถ้าไม่อยากเดินเยอะ หรืออยู่ชั้นล่างของหงหยาต้ง<br>
-            • สถานี: เดินไปสถานี <strong>Xiaoshizi (小什字)</strong> ซึ่งใกล้หงหยาต้งที่สุด<br>
-            • วิธีเดินทาง: นั่งสาย 1 หรือ 6 มาลงที่สถานีเดิม (Linjiangmen หรือ Xiaoshizi ใกล้ทางออกโรงแรม)<br>
-            • ข้อดี: ประหยัดแรงขา</span></p>
-            <p style="font-size: 14px;"><strong>3. เรียก DiDi / Taxi</strong><br>
-            <span style="color: var(--text-gray);">• จุดเรียก: แนะนำให้เดินออกมาห่างจากหน้าหงหยาต้ง (เช่น ขึ้นมาที่ชั้น 11 แล้วขยับไปจุดที่รถจอดได้สะดวก) เพราะหน้าหงหยาต้งรถติดและคนเยอะมาก<br>
+            • สถานี: เดินไปที่สถานี <strong>Xiaoshizi (小什字)</strong> ซึ่งเป็นสถานีที่ใกล้หงหยาต้งที่สุด<br>
+            • วิธีเดินทาง: นั่งสาย 1 หรือ สาย 6 มาลงที่สถานีเดิม หรือถ้าโรงแรมอยู่ใกล้ทางออกไหนของ Xiaoshizi ก็เดินขึ้นทางออกนั้นได้เลยครับ<br>
+            • ข้อดี: ช่วยประหยัดแรงขาได้ระดับหนึ่ง</span></p>
+
+            <p style="font-size: 14px;"><strong>3. เรียกรถ Didi / Taxi</strong><br>
+            <span style="color: var(--text-gray);">• จุดเรียก: แนะนำให้เดินออกห่างจากหน้าหงหยาต้งมาสักนิด (เช่น เดินขึ้นมาที่ชั้น 11 แล้วขยับไปเรียกตรงจุดที่รถจอดได้สะดวก) เพราะหน้าหงหยาต้งรถติดและคนเยอะมากครับ<br>
             • ค่าใช้จ่าย: ประมาณ 10 - 15 หยวน (ราคาเริ่มต้น)</span></p>
-            <p style="color: #d35400; font-size: 13px; text-align: center;">💡 <strong>สรุป:</strong> แนะนำให้ <b>เดินจากชั้น 11 ของหงหยาต้ง</b> กลับมาทางหอนาฬิกาครับ คุมเวลาได้ดีที่สุดในคืนที่คนเยอะ</p>
+
+            <p style="color: #d35400; font-size: 13px; text-align: center;">💡 <strong>สรุป:</strong> แนะนำให้ เดิน จากชั้น 11 ของหงหยาต้งกลับมาทางหอนาฬิกา Jiefangbei ครับ จะเป็นวิธีที่คุมเวลาได้ดีที่สุดในคืนที่คนเยอะครับ</p>
+            
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
@@ -1030,7 +1027,20 @@
     <div class="modal-overlay" id="shancheng-shibati-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">📍 วิธีเดินทางไปสือปาถี (จากซานเฉิง)</div>
-            <p style="font-size: 14px;"><strong>1. รถแท็กซี่ หรือ DiDi</strong> (~10-12 หยวน)<br><strong>2. รถเมล์</strong> สาย 441 หรือ 0491 (2 หยวนตลอดสาย)</p>
+            <p style="font-size: 14px; margin-top: 0; color: var(--text-gray);">หากไม่ต้องการเดินเท้า จาก ตรอกซานเฉิง (Shancheng Alley) ไป สือปาถี (Shibati) มีทางเลือกอื่นดังนี้ครับ:</p>
+            
+            <p style="font-size: 14px;"><strong>1. รถแท็กซี่ หรือ DiDi (แนะนำถ้าไม่อยากเดิน)</strong><br>
+            <span style="color: var(--text-gray);">• ระยะเวลา: ประมาณ 3-5 นาที<br>
+            • ค่าโดยสาร: ประมาณ 10-12 หยวน (ราคาเริ่มต้น)<br>
+            • ข้อดี: สะดวกที่สุด ไปส่งถึงทางเข้าหลักของสือปาถีได้เลย ไม่ต้องเดินขึ้นลงบันไดเอง</span></p>
+            
+            <p style="font-size: 14px;"><strong>2. รถเมล์ท้องถิ่น</strong><br>
+            <span style="color: var(--text-gray);">• สายที่ผ่าน: เช่น สาย 441 หรือ 0491 (ขึ้นที่ป้ายใกล้ทางออกตรอกซานเฉิง)<br>
+            • ค่าโดยสาร: 2 หยวนตลอดสาย<br>
+            • ข้อควรระวัง: อาจจะต้องรอรถนานเล็กน้อย และต้องดูป้ายภาษาจีนให้ดีครับ</span></p>
+            
+            <p style="color: #d35400; font-size: 13px;">💡 <strong>สรุปคำแนะนำ:</strong> เนื่องจากระยะทางสั้นมาก (ไม่ถึง 1 กิโลเมตร) การเรียก DiDi หรือแท็กซี่ จะสะดวกและคุ้มค่าที่สุดครับ เพราะจ่ายเพิ่มเพียงประมาณ 50-60 บาทไทย แต่ช่วยประหยัดแรงขาไว้เดินเที่ยวในสือปาถีต่อได้ยาวๆ ครับ</p>
+            
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
@@ -1038,7 +1048,26 @@
     <div class="modal-overlay" id="shibati-walk-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">📍 วิธีเดินกลับที่พัก (สือปาถี ➔ โรงแรม)</div>
-            <p style="font-size: 14px;">เดินมุ่งหน้าขึ้นเหนือผ่านโซนถนนคนเดิน Jiefangbei ไปที่ลาน <strong>Kuixing Lou (ชั้น 22)</strong> แล้วลงลิฟต์ไปชั้น 6 ครับ</p>
+            
+            <p style="font-size: 14px; margin-top: 0; color: var(--text-gray);">
+                จากเมืองโบราณสือปาถี (Shibati) กลับที่พักตึก 高盛创富中心 (Gaosheng Chuangfu) ของคุณธงชัย สามารถเดินเท้าได้เลยเพราะใกล้และเป็นทางเชื่อมโดยตรงครับ
+            </p>
+
+            <p style="font-size: 14px; color: #ff4757; font-weight: 600; margin-bottom: 5px;">เส้นทางการเดินกลับ (ประมาณ 10-15 นาที):</p>
+            <ol style="font-size: 14px; padding-left: 20px; color: var(--text-dark); margin-top: 0;">
+                <li style="margin-bottom: 6px;"><strong>เดินขึ้นจากสือปาถี:</strong> มุ่งหน้าขึ้นไปทางทิศเหนือเพื่อเข้าสู่ย่าน Jiefangbei</li>
+                <li style="margin-bottom: 6px;"><strong>เดินเชื่อมไปยังตึก:</strong> เดินผ่านโซนถนนคนเดินมุ่งตรงไปทางลาน Kuixing Lou (魁星楼)</li>
+                <li style="margin-bottom: 6px;"><strong>เข้าตึกจากชั้นบน:</strong> ลาน Kuixing Lou นี้จะเชื่อมต่อกับ <strong>ชั้น 22</strong> ของตึก Gaosheng Chuangfu Center พอดี</li>
+                <li><strong>ลงลิฟต์เข้าที่พัก:</strong> เมื่อเข้าตึกมาแล้ว ใช้ลิฟต์กดลงไปที่ <strong>ชั้น 6</strong> เพื่อกลับเข้าสู่ล็อบบี้โรงแรมครับ</li>
+            </ol>
+            
+            <p style="font-size: 14px; color: #d35400; font-weight: 600; margin-bottom: 5px; margin-top: 15px;">💡 ทำไมถึงแนะนำการเดิน:</p>
+            <ul style="font-size: 13px; padding-left: 20px; color: var(--text-gray); margin-top: 0;">
+                <li style="margin-bottom: 5px;"><strong>ความสะดวก:</strong> ย่านนี้เป็นทางเดินต่างระดับเชื่อมถึงกันหมด การเดินจากชั้นบนเข้าตึกที่ชั้น 22 ช่วยเลี่ยงการเดินขึ้นบันไดหรือทางชันจากถนนริมแม่น้ำด้านล่าง</li>
+                <li><strong>ชมวิว:</strong> ช่วงกลางคืนหลัง 21:00 น. เส้นทางนี้สวยมาก เพราะผ่านจุดชมวิวเมืองและแสงไฟของย่าน Jiefangbei</li>
+            </ul>
+            <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 0;"><em>วิธีนี้ประหยัดที่สุดและไม่ต้องรอรถให้เสียเวลาเลยครับ</em></p>
+
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
@@ -1046,7 +1075,22 @@
     <div class="modal-overlay" id="hotel-return-alt-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">📍 กลับที่พักด้วยวิธีอื่น (จากสือปาถี)</div>
-            <p style="font-size: 14px;">เรียก <strong>DiDi</strong> ปักหมุด "高盛创富中心" ย้ำว่าไป "滨江路" (ถนนเส้นล่าง) รถจะส่งหน้าตึกชั้น 1 เลยครับ</p>
+            <p style="font-size: 14px; margin-top: 0; color: var(--text-gray);">นอกจากวิธีเดินเท้าผ่านชั้น 22 แล้ว หากต้องการประหยัดแรง มีอีก 2 วิธีที่สะดวกมากครับ:</p>
+            
+            <p style="font-size: 14px;"><strong>1. เรียก DiDi หรือ แท็กซี่ (แนะนำที่สุด)</strong><br>
+            <span style="color: var(--text-gray);">• ค่ารถ: ประมาณ 10-15 หยวน (ไม่เกิน 75 บาท)<br>
+            • เวลา: ประมาณ 5-10 นาที<br>
+            • <strong>ถ้าไปล็อบบี้ (ชั้น 6):</strong> ปักหมุด "高盛创富中心" ย้ำว่าไป "滨江路" (ถนนเส้นล่าง) รถจอดหน้าตึกชั้น 1 ขึ้นลิฟต์ไปชั้น 6<br>
+            • <strong>ถ้าไปลานกุ้ยซิงโหลว (ชั้น 22):</strong> บอกไป "魁星楼" รถส่งชั้นบน แล้วเดินเข้าตึกลงลิฟต์มาชั้น 6</span></p>
+            
+            <p style="font-size: 14px;"><strong>2. รถไฟใต้ดิน (CRT)</strong><br>
+            <span style="color: var(--text-gray);">• ค่ารถ: 2 หยวน<br>
+            • สถานีต้นทาง: สถานี Jiaochangkou (ใกล้ทางเข้าสือปาถีฝั่งบน) นั่งสาย 2<br>
+            • สถานีปลายทาง: ลงสถานี Linjiangmen (นั่ง 1 สถานี)<br>
+            • การเดินทางต่อ: ออกทางออก D เดิน 400ม. เข้าตึก Gaosheng Chuangfu ทางลานกุ้ยซิงโหลว (ชั้น 22)</span></p>
+            
+            <p style="color: #d35400; font-size: 13px;">💡 <strong>สรุปคำแนะนำ:</strong> ถ้าเที่ยวมาทั้งวันจนเหนื่อยแล้ว เรียก DiDi หรือแท็กซี่ คือวิธีที่ดีที่สุดครับ เพราะราคาถูกมากและส่งถึงหน้าตึกเลย ไม่ต้องเดินขึ้นลงบันไดรถไฟใต้ดินอีกรอบครับ</p>
+            
             <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
@@ -1072,6 +1116,7 @@
     <div class="modal-overlay" id="add-task-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-title">📝 เพิ่มรายการของคุณเอง</div>
+            
             <div class="input-group" id="custom-time-group" style="margin-bottom: 10px;">
                 <input type="text" id="custom-time" placeholder="เวลา (เช่น 08:00 - 09:00)">
             </div>
@@ -1081,6 +1126,7 @@
             <div class="input-group" style="margin-bottom: 20px;">
                 <textarea id="custom-desc" placeholder="รายละเอียด (ไม่ใส่ก็ได้)" style="resize: vertical; min-height: 60px;"></textarea>
             </div>
+            
             <input type="hidden" id="custom-day-id">
             <button class="btn-primary" onclick="saveCustomTask()">บันทึกรายการ</button>
             <button class="btn-close" onclick="closeModals()">ยกเลิก</button>
@@ -1134,7 +1180,25 @@
             });
         };
 
-        // ซ่อน Bottom Bar อัตโนมัติเวลาคีย์บอร์ด Android เด้ง
+        function switchTab(event, dayId) {
+            // 1. สั่งเด้งขึ้นบนสุด "ก่อน" เปลี่ยนแท็บ เพื่อไม่ให้ Layout พัง
+            window.scrollTo(0, 0);
+
+            // 2. ลบคลาส active ออกให้หมด
+            document.querySelectorAll('.day-group').forEach(group => group.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // 3. ใส่คลาส active ให้แท็บที่เลือก
+            document.getElementById(dayId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // 4. เลื่อนปุ่มแท็บ
+            const tabContainer = document.querySelector('.day-tabs');
+            const scrollPos = event.currentTarget.offsetLeft - (tabContainer.offsetWidth / 2) + (event.currentTarget.offsetWidth / 2);
+            tabContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
+        }
+
+        // ระบบซ่อน Bottom Bar อัตโนมัติเวลาคีย์บอร์ด Android เด้ง (ใช้แค่ focus ชัวร์สุด)
         document.addEventListener('focusin', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                 document.querySelector('.bottom-bar').style.display = 'none';
@@ -1151,6 +1215,7 @@
             const timeGroup = document.getElementById('custom-time-group');
             if (dayId === 'pre-trip') timeGroup.style.display = 'none';
             else timeGroup.style.display = 'flex';
+            
             document.getElementById('add-task-modal').classList.add('active');
         }
 
@@ -1202,7 +1267,9 @@
         function deleteCustomTask(id, titleText, event) {
             event.stopPropagation();
             if(!confirm('ต้องการลบรายการนี้ใช่ไหม?')) return;
+            
             db.ref('tripData/customTasks/' + id).remove();
+            
             if (completedCards.includes(titleText)) {
                 completedCards = completedCards.filter(t => t !== titleText);
                 db.ref('tripData/tasks').set(completedCards);
@@ -1240,7 +1307,10 @@
 
                 setTimeout(() => {
                     let newTasks = [...completedCards];
-                    if(!newTasks.includes(title)) newTasks.push(title);
+                    if(!newTasks.includes(title)) {
+                        newTasks.push(title);
+                    }
+                    
                     db.ref('tripData/tasks').set(newTasks);
                     db.ref('tripData/expense').set(totalExpense + cost);
                 }, 400);
@@ -1258,15 +1328,6 @@
             document.getElementById('progress-percent').innerText = percentage;
         };
 
-        function switchTab(event, dayId) {
-            document.querySelectorAll('.day-group').forEach(group => group.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(dayId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            event.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            window.scrollTo(0, 0);
-        }
-
         function toggleTheme() {
             isDarkMode = !isDarkMode;
             if(isDarkMode) enableDarkMode();
@@ -1276,7 +1337,6 @@
             }
             localStorage.setItem('cq_darkmode', isDarkMode);
         }
-
         function enableDarkMode() {
             document.body.classList.add('dark-mode');
             document.getElementById('theme-toggle').innerText = '☀️';
@@ -1296,6 +1356,7 @@
         async function manualFetchRate() {
             const btn = document.getElementById('btn-refresh-rate');
             const statusMsg = document.getElementById('api-status-msg');
+            
             btn.classList.add('spinning');
             statusMsg.style.color = 'var(--text-gray)';
             statusMsg.innerText = 'กำลังดึงเรทล่าสุด...';
