@@ -29,29 +29,33 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* 1. คืนค่ากลับสู่ Basic Scroll - ปลด overflow: hidden ออก */
-        body { 
-            font-family: 'Kanit', sans-serif; 
-            background-color: #000; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
+        html, body {
+            width: 100%; height: 100%; 
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); 
+            overflow: hidden; 
+            overscroll-behavior: none; 
+            font-family: 'Kanit', sans-serif;
+            transition: background-color 0.3s;
         }
 
-        /* 2. ใช้แค่ min-height: 100dvh ไม่ใช้ height: 100% หรือ 100vh */
+        body { display: flex; justify-content: center; }
+
         .app-container {
-            width: 100%; max-width: 430px; background-color: var(--bg-main); 
-            min-height: 100dvh; 
+            width: 100%; max-width: 430px; 
+            height: 100%; 
+            background-color: var(--bg-main); 
+            display: flex; flex-direction: column; 
             position: relative; 
             box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            padding-bottom: calc(90px + var(--safe-bottom)); /* เว้นที่ให้แถบล่าง */
         }
 
-        /* 3. ลบ translateZ และ will-change ออกจาก Header */
+        /* Header */
         .app-header {
+            flex-shrink: 0; 
             background: var(--header-bg); color: white; padding: calc(20px + var(--safe-top)) 20px 20px 20px;
-            position: sticky; top: 0; z-index: 100; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10;
         }
         .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .header-titles h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
@@ -60,6 +64,11 @@
         .icon-btn {
             background: rgba(255,255,255,0.15); border: none; border-radius: 50%; width: 38px; height: 38px; 
             font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white;
+        }
+
+        /* กล่องย่อยสำหรับพับเก็บ (Collapse) */
+        #summary-section {
+            /* ใช้คุมการแสดงผลโชว์/ซ่อนผ่าน JS */
         }
 
         .total-box {
@@ -71,6 +80,7 @@
         .total-box .primary-amt small { font-size: 16px; margin-left: 6px; color: white; font-weight: 500; }
         .total-box .secondary-amt { background: rgba(46, 213, 115, 0.2); color: #2ed573; padding: 4px 14px; border-radius: 20px; font-size: 16px; font-weight: 600; }
 
+        .progress-text { font-size: 11px; text-align: right; margin-bottom: 5px; font-weight: 600; opacity: 0.9;}
         .progress-container { background: rgba(0,0,0,0.2); border-radius: 10px; height: 6px; width: 100%; margin-bottom: 20px; overflow: hidden; }
         .progress-bar { background: #2ed573; height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 10px; }
 
@@ -79,11 +89,18 @@
         .tab-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-family: 'Kanit'; white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-btn.active { background: #ffffff; color: #e94057; font-weight: 600; border-color: #ffffff;}
 
-        /* Content กลับมาเป็นแบบธรรมดา */
-        .content { padding: 20px 15px; }
+        /* กล่องเนื้อหาตรงกลาง */
+        .content { 
+            flex: 1; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; 
+            padding: 20px 15px calc(90px + var(--safe-bottom)); 
+        }
         
-        .day-group { display: none; } /* ซ่อนแท็บแบบไม่มีแอนิเมชัน ไม่ใช้ GPU */
+        .day-group { display: none; animation: simpleFade 0.2s ease-out; }
         .day-group.active { display: block; }
+        @keyframes simpleFade { from { opacity: 0; } to { opacity: 1; } }
 
         .day-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; }
         .day-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--primary); border-radius: 4px; margin-right: 10px; }
@@ -91,7 +108,8 @@
         .activity-card {
             background: var(--card-bg); border-radius: 16px; padding: 20px 16px; margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; gap: 15px; align-items: flex-start;
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02); overflow: hidden;
+            transition: background-color 0.3s;
         }
         .activity-card.completed { display: none; }
 
@@ -120,26 +138,26 @@
         .expense-box span { color: #ff4757; font-weight: 600; margin-right: 8px; font-size: 14px; }
         .expense-box input { border: none; background: transparent; outline: none; font-family: 'Kanit'; font-size: 14px; width: 100%; color: var(--text-dark); }
         
-        .btn-add-task { width: 100%; background: transparent; border: 2px dashed rgba(116, 125, 140, 0.4); color: var(--text-gray); padding: 12px; border-radius: 14px; font-family: 'Kanit'; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-add-task { width: 100%; background: transparent; border: 2px dashed rgba(116, 125, 140, 0.4); color: var(--text-gray); padding: 12px; border-radius: 14px; font-family: 'Kanit'; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-add-task:active { background: rgba(0,0,0,0.05); }
         
         .title-custom { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 10px; }
         .btn-delete-custom { color: #ff4757; font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Kanit'; padding: 0; margin-top: 2px; flex-shrink: 0;}
 
-        /* 4. ปิด backdrop-filter ตัวแสบ! ใช้สีทึบไปเลย */
+        /* Bottom Reset Bar */
         .bottom-bar { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 430px; 
-            background: #ffffff; /* ใช้สีทึบ 100% แทน */
-            /* ลบ backdrop-filter: blur(10px); ออก */
+            background: #ffffff; 
             padding: 15px 20px calc(15px + var(--safe-bottom)); border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
         }
         body.dark-mode .bottom-bar { background: #1e1e1e; border-color: rgba(255,255,255,0.05); }
         .btn-reset { background: var(--input-bg); color: var(--text-dark); border: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
 
-        /* MODALS - ลบ backdrop-filter ออกเช่นกัน */
+        /* MODALS */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); /* ปรับให้ทึบขึ้นนิดนึงแทนการเบลอ */
+            background: rgba(0,0,0,0.85); 
             z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; 
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -181,12 +199,13 @@
 </head>
 <body>
 
-    <div id="sync-overlay">
-        <div class="spinner-sync"></div>
-        <div style="color: var(--text-dark); font-weight: 500; font-family: 'Kanit';">กำลังดึงข้อมูลทริปล่าสุด...</div>
-    </div>
-
     <div class="app-container">
+        
+        <div id="sync-overlay">
+            <div class="spinner-sync"></div>
+            <div style="color: var(--text-dark); font-weight: 500; font-family: 'Kanit';">กำลังดึงข้อมูลทริปล่าสุด...</div>
+        </div>
+
         <div class="app-header">
             <div class="header-top">
                 <div class="header-titles">
@@ -196,18 +215,21 @@
                 <div class="header-actions">
                     <button class="icon-btn" onclick="openConverter()">💱</button>
                     <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+                    <button class="icon-btn" id="header-toggle-btn" onclick="toggleHeader()">🔼</button>
                 </div>
             </div>
 
-            <div class="total-box">
-                <div class="label">ยอดใช้จ่ายทริปนี้:</div>
-                <div class="primary-amt"><span id="total-spent">0</span><small>หยวน</small></div>
-                <div class="secondary-amt"><span id="total-spent-thb">≈ 0</span> บาท</div>
-            </div>
+            <div id="summary-section">
+                <div class="total-box">
+                    <div class="label">ยอดใช้จ่ายทริปนี้:</div>
+                    <div class="primary-amt"><span id="total-spent">0</span><small>หยวน</small></div>
+                    <div class="secondary-amt"><span id="total-spent-thb">≈ 0</span> บาท</div>
+                </div>
 
-            <div class="progress-text">ตะลุยทริปไปแล้ว <span id="progress-percent">0</span>%</div>
-            <div class="progress-container">
-                <div class="progress-bar" id="trip-progress"></div>
+                <div class="progress-text">ตะลุยทริปไปแล้ว <span id="progress-percent">0</span>%</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="trip-progress"></div>
+                </div>
             </div>
 
             <div class="day-tabs" id="tab-container">
@@ -220,7 +242,7 @@
             </div>
         </div>
 
-        <div class="content">
+        <div class="content" id="scrollable-content">
 
             <div class="day-group active" id="pre-trip">
                 <div class="day-title">🎒 เช็กลิสต์ก่อนบิน</div>
@@ -305,7 +327,7 @@
                         <div class="title">สถานีรถไฟทะลุตึก Liziba (หลี่จื่อป้า) ถ่ายรูปจากมุมข้างล่างทางออก A</div>
                         <div class="action-tags">
                             <a href="https://uri.amap.com/search?keyword=李子坝" target="_blank" class="btn-tag amap">📍 Amap</a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=李子坝站+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>                
+                            <a href="https://www.google.com/maps/search/?api=1&query=李子坝站+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>
                             <button class="btn-tag cn" onclick="openFlashcard('李子坝', 'Lǐzǐbà', 'สถานีรถไฟหลี่จื่อป้า')">🇨🇳 ยื่นให้แท็กซี่</button>
                         </div>
                         <div class="desc">
@@ -1148,9 +1170,16 @@
         let completedCards = [];
         let currentExchangeRate = 5.1;
         let isDarkMode = localStorage.getItem('cq_darkmode') === 'true';
+        let isHeaderCollapsed = localStorage.getItem('cq_header_collapsed') === 'true';
 
         window.onload = () => {
             if(isDarkMode) enableDarkMode();
+            
+            // ตั้งค่าเริ่มต้นปุ่มย่อ/ขยาย
+            if(isHeaderCollapsed) {
+                document.getElementById('summary-section').style.display = 'none';
+                document.getElementById('header-toggle-btn').innerText = '🔽';
+            }
             
             tripRef.on('value', (snapshot) => {
                 document.getElementById('sync-overlay').style.opacity = '0';
@@ -1175,25 +1204,32 @@
             });
         };
 
+        function toggleHeader() {
+            isHeaderCollapsed = !isHeaderCollapsed;
+            const summarySec = document.getElementById('summary-section');
+            const btnToggle = document.getElementById('header-toggle-btn');
+            
+            if (isHeaderCollapsed) {
+                summarySec.style.display = 'none';
+                btnToggle.innerText = '🔽';
+            } else {
+                summarySec.style.display = 'block';
+                btnToggle.innerText = '🔼';
+            }
+            localStorage.setItem('cq_header_collapsed', isHeaderCollapsed);
+        }
+
         function switchTab(event, dayId) {
-            // 1. ลบคลาส active ออกให้หมด
+            document.getElementById('scrollable-content').scrollTop = 0;
             document.querySelectorAll('.day-group').forEach(group => group.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // 2. ใส่คลาส active ให้แท็บที่เลือก
             document.getElementById(dayId).classList.add('active');
             event.currentTarget.classList.add('active');
-            
-            // 3. เลื่อนปุ่มแท็บด้านบน
             const tabContainer = document.querySelector('.day-tabs');
             const scrollPos = event.currentTarget.offsetLeft - (tabContainer.offsetWidth / 2) + (event.currentTarget.offsetWidth / 2);
             tabContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
-
-            // 4. เด้งขึ้นบนสุดของหน้าต่างแบบเพียวๆ เลย
-            window.scrollTo(0, 0);
         }
 
-        // ระบบซ่อน Bottom Bar อัตโนมัติเวลาคีย์บอร์ด Android เด้ง
         document.addEventListener('focusin', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                 document.querySelector('.bottom-bar').style.display = 'none';
@@ -1231,12 +1267,8 @@
             closeModals();
         }
 
-        // ----------------------------------------------------------------
-        // ฟังก์ชันช่วยแปลงเวลา "HH:MM" เป็นตัวเลขนาที เพื่อเอามาเทียบกันได้
-        // ----------------------------------------------------------------
         function parseTimeToMinutes(timeStr) {
-            if (!timeStr) return 9999; // ถ้าไม่ได้ใส่เวลา ให้ไปอยู่ล่างสุด
-            // ค้นหาแพทเทิร์นเวลา ตัวเลข:ตัวเลข เช่น 08:30
+            if (!timeStr) return 9999;
             const match = timeStr.match(/(\d{1,2}):(\d{2})/);
             if (match) {
                 return parseInt(match[1]) * 60 + parseInt(match[2]);
@@ -1244,9 +1276,6 @@
             return 9999; 
         }
 
-        // ----------------------------------------------------------------
-        // อัปเดตฟังก์ชันสร้างกล่องรายการ (เพิ่มระบบแทรกตามลำดับเวลา)
-        // ----------------------------------------------------------------
         function renderSingleCustomTask(task) {
             const dayContainer = document.getElementById(task.dayId);
             if(!dayContainer) return;
@@ -1273,9 +1302,7 @@
                 </div>
             `;
             
-            // --- ระบบจัดเรียงแทรกตามเวลา ---
             const newTaskTime = parseTimeToMinutes(task.time);
-            // ดึงการ์ดกิจกรรมทั้งหมดที่มีอยู่ในวันนั้นมาเช็ค
             const existingTasks = Array.from(dayContainer.querySelectorAll('.task-item'));
             let inserted = false;
 
@@ -1285,7 +1312,6 @@
                 const currentTaskTimeStr = timeBadge ? timeBadge.innerText : '';
                 const currentTaskTime = parseTimeToMinutes(currentTaskTimeStr);
 
-                // ถ้าเวลาของรายการใหม่ น้อยกว่า (มาก่อน) รายการที่มีอยู่ ให้แทรกไว้ข้างหน้าทันที
                 if (newTaskTime < currentTaskTime) {
                     dayContainer.insertBefore(card, currentTask);
                     inserted = true;
@@ -1293,7 +1319,6 @@
                 }
             }
 
-            // ถ้าหาที่แทรกไม่ได้ (เวลาดึกสุด หรือไม่ได้ใส่เวลามา) ให้ไปต่อท้ายสุด (ก่อนปุ่มเพิ่มรายการ)
             if (!inserted) {
                 dayContainer.insertBefore(card, btnAdd);
             }
@@ -1441,7 +1466,7 @@
             db.ref('tripData/tasks').remove();
             db.ref('tripData/expense').set(0);
             document.querySelectorAll('.actual-expense').forEach(input => input.value = '');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('scrollable-content').scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
