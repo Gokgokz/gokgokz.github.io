@@ -90,15 +90,7 @@
 
         /* Content */
         .content { padding: 20px 15px; }
-        .day-group { 
-            display: none; 
-            animation: fadeIn 0.3s ease; 
-            /* เพิ่ม 3 บรรทัดนี้ด้านล่าง */
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
+        .day-group { display: none; }
         .day-group.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .day-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; }
