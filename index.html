@@ -29,13 +29,20 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         /* ปรับสี body ให้กลืนกับแอป ป้องกันขอบขาว */
-        body { font-family: 'Kanit', sans-serif; background-color: var(--bg-main); margin: 0; display: flex; justify-content: center; transition: background-color 0.3s; }
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: #000; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            /* ลบ transition ทิ้งไปเลย */
+        }
 
         .app-container {
             width: 100%; max-width: 430px; background-color: var(--bg-main); 
             min-height: 100vh; min-height: 100dvh; position: relative; 
             box-shadow: 0 0 20px rgba(0,0,0,0.5); padding-bottom: calc(90px + var(--safe-bottom)); 
-            transition: background-color 0.3s; 
+            /* ลบ transition ทิ้งไปเลย */
         }
 
         /* Header */
@@ -1181,20 +1188,26 @@
         };
 
         function switchTab(event, dayId) {
-            // 1. ลบคลาส active ออกให้หมด
-            document.querySelectorAll('.day-group').forEach(group => group.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // 2. ใส่คลาส active ให้แท็บที่เลือก
-            document.getElementById(dayId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            
-            // 3. เลื่อนปุ่มแท็บ
+            // 1. เลื่อนแถบปุ่มกดด้านบนก่อน
             const tabContainer = document.querySelector('.day-tabs');
             const scrollPos = event.currentTarget.offsetLeft - (tabContainer.offsetWidth / 2) + (event.currentTarget.offsetWidth / 2);
             tabContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
 
-            // 4. เด้งกลับขึ้นบนสุดทันที (ลบ delay ออก)
+            // 2. เปลี่ยนสีปุ่มที่ถูกกด
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // 3. ทริคแก้จอขาว: "แสดงแท็บใหม่ก่อน แล้วค่อยซ่อนแท็บเก่า"
+            const oldTab = document.querySelector('.day-group.active');
+            const newTab = document.getElementById(dayId);
+            
+            newTab.classList.add('active'); // เปิดแท็บใหม่ขึ้นมาทันที
+            
+            if (oldTab && oldTab !== newTab) {
+                oldTab.classList.remove('active'); // ปิดแท็บเก่าทิ้ง
+            }
+
+            // 4. สั่งเด้งขึ้นบนสุด
             window.scrollTo(0, 0);
         }
 
