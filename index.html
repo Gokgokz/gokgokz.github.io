@@ -305,7 +305,7 @@
                         <div class="title">สถานีรถไฟทะลุตึก Liziba (หลี่จื่อป้า) ถ่ายรูปจากมุมข้างล่างทางออก A</div>
                         <div class="action-tags">
                             <a href="https://uri.amap.com/search?keyword=李子坝" target="_blank" class="btn-tag amap">📍 Amap</a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=李子坝站+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=李子坝站+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>                
                             <button class="btn-tag cn" onclick="openFlashcard('李子坝', 'Lǐzǐbà', 'สถานีรถไฟหลี่จื่อป้า')">🇨🇳 ยื่นให้แท็กซี่</button>
                         </div>
                         <div class="desc">
@@ -1231,6 +1231,22 @@
             closeModals();
         }
 
+        // ----------------------------------------------------------------
+        // ฟังก์ชันช่วยแปลงเวลา "HH:MM" เป็นตัวเลขนาที เพื่อเอามาเทียบกันได้
+        // ----------------------------------------------------------------
+        function parseTimeToMinutes(timeStr) {
+            if (!timeStr) return 9999; // ถ้าไม่ได้ใส่เวลา ให้ไปอยู่ล่างสุด
+            // ค้นหาแพทเทิร์นเวลา ตัวเลข:ตัวเลข เช่น 08:30
+            const match = timeStr.match(/(\d{1,2}):(\d{2})/);
+            if (match) {
+                return parseInt(match[1]) * 60 + parseInt(match[2]);
+            }
+            return 9999; 
+        }
+
+        // ----------------------------------------------------------------
+        // อัปเดตฟังก์ชันสร้างกล่องรายการ (เพิ่มระบบแทรกตามลำดับเวลา)
+        // ----------------------------------------------------------------
         function renderSingleCustomTask(task) {
             const dayContainer = document.getElementById(task.dayId);
             if(!dayContainer) return;
@@ -1256,7 +1272,31 @@
                     ${expenseHtml}
                 </div>
             `;
-            dayContainer.insertBefore(card, btnAdd);
+            
+            // --- ระบบจัดเรียงแทรกตามเวลา ---
+            const newTaskTime = parseTimeToMinutes(task.time);
+            // ดึงการ์ดกิจกรรมทั้งหมดที่มีอยู่ในวันนั้นมาเช็ค
+            const existingTasks = Array.from(dayContainer.querySelectorAll('.task-item'));
+            let inserted = false;
+
+            for (let i = 0; i < existingTasks.length; i++) {
+                const currentTask = existingTasks[i];
+                const timeBadge = currentTask.querySelector('.time-badge');
+                const currentTaskTimeStr = timeBadge ? timeBadge.innerText : '';
+                const currentTaskTime = parseTimeToMinutes(currentTaskTimeStr);
+
+                // ถ้าเวลาของรายการใหม่ น้อยกว่า (มาก่อน) รายการที่มีอยู่ ให้แทรกไว้ข้างหน้าทันที
+                if (newTaskTime < currentTaskTime) {
+                    dayContainer.insertBefore(card, currentTask);
+                    inserted = true;
+                    break;
+                }
+            }
+
+            // ถ้าหาที่แทรกไม่ได้ (เวลาดึกสุด หรือไม่ได้ใส่เวลามา) ให้ไปต่อท้ายสุด (ก่อนปุ่มเพิ่มรายการ)
+            if (!inserted) {
+                dayContainer.insertBefore(card, btnAdd);
+            }
         }
 
         function deleteCustomTask(id, titleText, event) {
