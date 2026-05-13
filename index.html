@@ -188,9 +188,27 @@
 
         /* Sync Loading Overlay */
         #sync-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 1000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; transition: 0.5s;
-        }
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: white;
+
+    z-index: 999999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 1;
+
+    pointer-events: none;
+
+    transition: opacity .3s ease;
+}
         .spinner-sync { width: 40px; height: 40px; border: 4px solid rgba(255, 71, 87, 0.2); border-top-color: #ff4757; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     </style>
 </head>
@@ -1184,63 +1202,14 @@
 
         window.onload = () => {
 
-    // กันจอขาวค้างบน Android
+    // FIX SAMSUNG WHITE SCREEN
     setTimeout(() => {
         const overlay = document.getElementById('sync-overlay');
 
         if (overlay) {
             overlay.style.display = 'none';
         }
-    }, 3000);
-
-    if(isDarkMode) enableDarkMode();
-
-    tripRef.on('value', (snapshot) => {
-
-        const overlay = document.getElementById('sync-overlay');
-
-        if (overlay) {
-            overlay.style.opacity = '0';
-
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 300);
-        }
-
-        const data = snapshot.val() || {
-            expense: 0,
-            tasks: [],
-            customTasks: {},
-            rate: 5.1
-        };
-
-        totalExpense = data.expense || 0;
-        completedCards = data.tasks || [];
-        currentExchangeRate = data.rate || 5.1;
-
-        document.getElementById('conv-rate-val').value = currentExchangeRate;
-
-        document.querySelectorAll('.custom-item').forEach(el => el.remove());
-
-        if (data.customTasks) {
-            Object.values(data.customTasks).forEach(task => renderSingleCustomTask(task));
-        }
-
-        bindAllTasks();
-        updateUI();
-
-    }, (error) => {
-
-        // ถ้า Firebase พัง ก็อย่าให้จอขาว
-        console.error(error);
-
-        const overlay = document.getElementById('sync-overlay');
-
-        if (overlay) {
-            overlay.style.display = 'none';
-        }
-    });
-};
+    }, 2000);
 
         function switchTab(event, dayId) {
             // 1. สั่งเด้งขึ้นบนสุด "ก่อน" เปลี่ยนแท็บ เพื่อไม่ให้ Layout พัง
