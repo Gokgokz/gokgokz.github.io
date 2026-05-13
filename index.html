@@ -27,14 +27,17 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Kanit', sans-serif; background-color: #000; margin: 0; display: flex; justify-content: center; transition: 0.3s; }
+        body { 
+            font-family: 'Kanit', sans-serif; background-color: #000; margin: 0; 
+            display: flex; justify-content: center; 
+            transition: background-color 0.3s, color 0.3s; 
+        }
 
         .app-container {
             width: 100%; max-width: 430px; background-color: var(--bg-main); 
-            min-height: 100vh;
-            min-height: 100dvh; /* แก้ไขความสูงจอแบบ Dynamic สำหรับมือถือ */
-            position: relative; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); padding-bottom: calc(90px + var(--safe-bottom)); transition: 0.3s;
+            min-height: 100vh; min-height: 100dvh; position: relative; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); padding-bottom: calc(90px + var(--safe-bottom)); 
+            transition: background-color 0.3s, color 0.3s; 
         }
 
         /* Header */
@@ -1270,9 +1273,10 @@
             document.getElementById(dayId).classList.add('active');
             event.currentTarget.classList.add('active');
             event.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // แก้ไขบรรทัดนี้: ลบ behavior: 'smooth' ออก ป้องกัน Android ค้างตอนสลับแท็บ
+            window.scrollTo(0, 0); 
         }
-
         function toggleTheme() {
             isDarkMode = !isDarkMode;
             if(isDarkMode) enableDarkMode();
