@@ -941,31 +941,41 @@
         </div>
     </div>
 
-<div class="activity-card task-item">
-    <label class="checkbox-wrapper">
-        <input type="checkbox" class="task-checkbox">
-        <span class="checkmark"></span>
-    </label>
-    <div class="activity-info">
-        <div class="time-badge">05:00 - 07:30</div>
-        <div class="title">ถึงสนามบิน CKG ผ่าน ตม. และเดินทางเข้าที่พักใหม่</div>
-        <div class="action-tags">
-            <button class="btn-tag guide" onclick="openHotelGuide()">📑 วิธีเข้าโรงแรม (กันหลง)</button>
-            <a href="https://uri.amap.com/search?keyword=解放碑八一路9号财汇广场" target="_blank" class="btn-tag amap">📍 Amap พิกัดตึกโรงแรม</a>
-            <button class="btn-tag cn" onclick="openFlashcard('请带我去：解放碑八一路9号财汇广场B座', 'Qǐng dài wǒ qù: Jiěfàngbēi Bāyī lù 9 hào Cáihuì Guǎngchǎng B zuò', 'กรุณาพาไปที่: ตึก Caihui Plaza ทาวเวอร์ B ถนน Bayi ย่านเจียฟ่างเป่ย')">🇨🇳 ยื่นให้แท็กซี่</button>
-        </div>
-        <div class="desc">
-            <span>🚇 <b>การเดินทาง:</b> นั่งรถไฟใต้ดิน (CRT) สาย 10 จากสนามบิน CKG มาลงสถานี <b>Zengjiayan</b> เพื่อเปลี่ยนเป็นสาย 2 แล้วนั่งมาลงสถานี <b>Linjiangmen</b> จากนั้นออก <b>ทางออก B</b> แล้วเดินต่อตามถนนคนเดินปาอีเข้าตึก Caihui Plaza ประมาณ 200 เมตร</span>
-            <br><br>
-            <span>🏨 <b>ชื่อโรงแรมภาษาจีน:</b> 梵调美宿（重庆解放碑店）</span>
-        </div>
-        <div class="expense-box">
-            <span>¥</span>
-            <input type="number" class="actual-expense" placeholder="ค่ารถ: ~7 หยวน">
+<div class="modal-overlay" id="hotel-guide-modal" onclick="closeModals()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
+            <div class="modal-title" style="text-align: center; color: #ff4757;">📍 วิธีเข้าโรงแรม Fandiao Meiju (Caihui Plaza)</div>
+            
+            <p style="font-size: 14px; margin-top: 0;"><strong>1. วิธีปักหมุดใน DiDi ให้ถูกต้อง:</strong><br>
+                <span style="color: var(--text-gray);">
+                    • พิมพ์ค้นหาชื่อโรงแรม: <b>梵调美宿（重庆解放碑店）</b><br>
+                    • หรือปักหมุดชื่อตึก: <b>重庆财汇广场 (Caihui Plaza)</b><br>
+                    • เลือกจุดลงรถ (Drop-off): บริเวณทางเข้าตึก <b>Tower B (B座)</b>
+                </span>
+            </p>
+            
+            <p style="color: #2ed573; font-size: 14px;"><strong>💡 ข้อดีของโรงแรมใหม่:</strong><br>
+                ตึกตั้งอยู่บนถนนคนเดิน <b>Bayi Road (八一路)</b> ซึ่งเป็นย่านสตรีทฟู้ดหลักของ Jiefangbei เรียกรถง่าย รถเข้าถึงหน้าตึก และไม่มีปัญหาเรื่องความสับสนของชั้นทางต่างระดับเหมือนที่เก่าครับ
+            </p>
+            
+            <p style="font-size: 14px;"><strong>2. 💬 ก๊อปข้อความนี้ส่งแชทให้คนขับ DiDi:</strong></p>
+            <div style="background: var(--input-bg); padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 10px; font-weight: 500; text-align: center; color: #1e272e;">
+                师傅，请带我去 解放碑八一路9号财汇广场B座 放我下车，ขอบคุณครับ。
+            </div>
+            
+            <p style="font-size: 14px;"><strong>3. 🚶‍♂️ เมื่อถึงตึก财汇广场 (Caihui Plaza):</strong><br>
+                <span style="color: var(--text-gray);">
+                    เดินเข้าประตูด้านหน้าของ <b>Tower B (B座)</b> แล้วตรงไปที่ลิฟต์ จากนั้นกดลิฟต์ขึ้นไปที่ <b>ชั้น 19 (19th Floor)</b> จะเจอเคาน์เตอร์เช็คอินของโรงแรม Fandiao Meiju ทันทีครับ
+                </span>
+            </p>
+            
+            <p style="color: #d35400; font-size: 13px;">
+                ⚠️ <b>โน้ตเพิ่มเติม:</b> จากที่พักคุณสามารถเดินเท้าไปหอนาฬิกา Jiefangbei หรือแวะหาของกินที่ Hao Chi Jie ได้ภายใน 2-3 นาที ใกล้และสะดวกมากๆ ครับ
+            </p>
+            
+            <button class="btn-close" onclick="closeModals()" style="margin-top: 15px;">ปิดหน้าต่าง</button>
         </div>
     </div>
-</div>
-
+    
     <div class="modal-overlay" id="airport-transport-modal" onclick="closeModals()">
         <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
             <div class="modal-title" style="text-align: center; color: #ff4757;">📍 วิธีการเดินทางจากสนามบิน</div>
