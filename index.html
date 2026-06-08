@@ -30,27 +30,21 @@
         
         /* 1. ล็อก Body ไม่ให้เลื่อนได้เด็ดขาด */
         html, body { 
-            font-family: 'Kanit', sans-serif; background-color: var(--bg-main); margin: 0; padding: 0;
-            height: 100%; overflow: hidden; /* ห้ามเลื่อนทั้งหน้าเว็บ */
-            display: flex; justify-content: center; 
-        }
+    font-family: 'Kanit', sans-serif; 
+    background-color: var(--bg-main); 
+    margin: 0; padding: 0;
+    min-height: 100dvh; /* ใช้ min-height แทน height: 100% */
+}
 
-        /* 2. เปลี่ยน App Container ให้เป็นกล่องคงที่ และใช้ Flexbox */
-        .app-container {
-            width: 100%; max-width: 430px; background-color: var(--bg-main); 
-            height: 100%; height: 100dvh; /* ล็อกความสูงเต็มจอ */
-            display: flex; flex-direction: column; /* เรียงจากบนลงล่าง */
-            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            overflow: hidden; /* ห้ามกล่องหลักเลื่อน */
-        }
-
-        /* 3. Header ยึดติดด้านบนเสมอ */
-        .app-header {
-            flex-shrink: 0; /* ห้ามบีบอัดความสูง */
-            background: var(--header-bg); color: white; padding: calc(20px + var(--safe-top)) 20px 10px 20px;
-            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10;
-        }
+/* 2. App Container ไม่ต้องล็อกความสูงแล้ว */
+.app-container {
+    width: 100%; max-width: 430px; 
+    background-color: var(--bg-main); 
+    min-height: 100dvh; 
+    margin: 0 auto; /* จัดกึ่งกลางจอแทน flex */
+    display: flex; flex-direction: column; 
+    position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+}
         
         .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .header-titles h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
@@ -75,11 +69,9 @@
 
         /* 4. ให้ Content กินพื้นที่ส่วนที่เหลือ และ "เลื่อนได้เฉพาะในนี้" */
         .content { 
-            flex-grow: 1; /* ขยายเติมพื้นที่ว่าง */
-            overflow-y: auto; /* เลื่อนขึ้นลงได้เฉพาะตรงนี้ */
-            -webkit-overflow-scrolling: touch; /* ให้เลื่อนสมูทบนมือถือ */
-            padding: 20px 15px calc(90px + var(--safe-bottom)); /* เว้นที่ให้ปุ่มด้านล่าง */
-        }
+    flex-grow: 1; 
+    padding: 20px 15px calc(90px + var(--safe-bottom)); 
+}
         
         .day-group { display: none; animation: simpleFade 0.2s ease-out; }
         .day-group.active { display: block; }
@@ -129,33 +121,29 @@
 
         /* 5. Bottom Reset Bar อิงกับตําแหน่งของคอนเทนเนอร์หลัก */
         .bottom-bar { 
-    position: absolute; 
-    bottom: 0; left: 0; 
-    width: 100%; 
-    background: rgba(255,255,255,0.9); 
-    
-    /* เพิ่ม Prefix และ Force GPU Layer */
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px); 
-    transform: translateZ(0); /* บังคับแยก Stacking Context */
-    will-change: transform, backdrop-filter; /* บอกเบราว์เซอร์ล่วงหน้า */
-    
+    position: fixed; 
+    bottom: 0; left: 50%; 
+    transform: translateX(-50%); /* ให้อยู่กึ่งกลางหน้าจอเสมอ */
+    width: 100%; max-width: 430px; 
+    background: var(--card-bg); /* ใช้สีทึบไปเลย */
     padding: 15px 20px calc(15px + var(--safe-bottom)); 
-    border-top: 1px solid rgba(0,0,0,0.05); 
-    z-index: 100; 
+    border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
+}
+body.dark-mode .bottom-bar { 
+    background: var(--card-bg); 
+    border-color: rgba(255,255,255,0.05); 
 }
         body.dark-mode .bottom-bar { background: rgba(30,30,30,0.9); border-color: rgba(255,255,255,0.05); }
         .btn-reset { background: var(--input-bg); color: var(--text-dark); border: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
 
         /* MODALS */
         .modal-overlay { 
-    position: fixed; 
-    top: 0; left: 0; 
+    position: fixed; top: 0; left: 0; 
     width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.8); 
-    z-index: 999; 
-    display: flex; justify-content: center; align-items: center; 
+    background: rgba(0,0,0,0.85); /* ปรับให้ทึบขึ้นนิดนึงแทนการเบลอ */
+    z-index: 999; display: flex; justify-content: center; align-items: center; 
     opacity: 0; pointer-events: none; transition: 0.3s; 
+}
     
     /* แก้ปัญหา Stacking Context */
     -webkit-backdrop-filter: blur(5px);
