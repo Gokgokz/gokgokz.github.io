@@ -251,6 +251,7 @@
 
             <div class="day-tabs" id="tab-container">
                 <button class="tab-btn active" onclick="switchTab(event, 'pre-trip')">🎒 เตรียมตัว</button>
+                <button class="tab-btn" onclick="switchTab(event, 'day1')">Day 0</button>
                 <button class="tab-btn" onclick="switchTab(event, 'day1')">Day 1</button>
                 <button class="tab-btn" onclick="switchTab(event, 'day2')">Day 2</button>
                 <button class="tab-btn" onclick="switchTab(event, 'day3')">Day 3</button>
@@ -301,6 +302,31 @@
                 </div>
 
                 <button class="btn-add-task" onclick="openAddTaskModal('pre-trip')">➕ เพิ่มรายการของคุณเอง</button>
+            </div>
+
+            <div class="day-group" id="day0">
+                <div class="day-title">📍 Day 0: วันพฤหัสที่ 25 มิ.ย. (จีนวันแรกฟรีเดย์)</div>
+                
+                <div class="activity-card task-item">
+                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
+                    <div class="activity-info">
+                        <div class="time-badge">05:00 - 07:30</div>
+                        <div class="title">ถึงสนามบิน CKG ผ่าน ตม. และฝากกระเป๋า</div>
+                        <div class="action-tags">
+                            <button class="btn-tag guide" onclick="document.getElementById('airport-transport-modal').classList.add('active')">📑 วิธีไปโรงแรม Fandiao Meiju (Caihui Plaza)</button>
+                            </div>
+                            <a href="https://uri.amap.com/search?keyword=梵调美宿（重庆解放碑店）" target="_blank" class="btn-tag amap">📍 Amap</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=花市豌杂面+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>
+                            <button class="btn-tag cn" onclick="openFlashcard('梵调美宿（重庆解放碑店)', 'Fàndiào Měijū', 'โรงแรมฟั่นเตี้ยว เหม่ยจู')">🇨🇳 ยื่นให้แท็กซี่</button>
+                        <div class="desc">
+                            <span>🚆 <b>เดินทาง:</b> นั่งรถไฟใต้ดิน (CRT) สาย 10 มาลงสถานี Zengjiayan เปลี่ยนเป็นสาย 2 มาลงสถานี Linjiangmen จากนั้นออก <b>ทางออก B</b> แล้วเดินต่อตามแผนที่เข้าตึก Caihui Plaza (Tower B) ประมาณ 200 เมตร</span>
+                            <span>💰 ค่ารถ: ~7 หยวน</span>
+                        </div>
+                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
+                    </div>
+                </div>
+
+            <button class="btn-add-task" onclick="openAddTaskModal('day0')">➕ เพิ่มรายการของคุณเอง</button>
             </div>
 
            <div class="day-group" id="day1">
