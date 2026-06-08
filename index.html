@@ -286,21 +286,28 @@
                 <div class="day-title">📍 Day 1: วันศุกร์ที่ 26 มิ.ย. (ปะทะเมือง 3 มิติ)</div>
                 
                 <div class="activity-card task-item">
-                    <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
-                    <div class="activity-info">
-                        <div class="time-badge">05:00 - 07:30</div>
-                        <div class="title">ถึงสนามบิน CKG ผ่าน ตม. และฝากกระเป๋า</div>
-                        <div class="action-tags">
-                            <button class="btn-tag guide" onclick="document.getElementById('airport-transport-modal').classList.add('active')">📑 วิธีการเดินทางอื่นๆ</button>
-                            <a href="https://uri.amap.com/search?keyword=高盛创富中心" target="_blank" class="btn-tag amap">📍 Amap</a>
-                        </div>
-                        <div class="desc">
-                            <span>🚆 <b>เดินทาง:</b> นั่งรถไฟใต้ดิน (CRT) สาย 10 มาลงสถานี Zengjiayan เปลี่ยนเป็นสาย 2 มาลงสถานี Linjiangmen จากนั้นออก <b>ทางออก D</b> แล้วเดินตามแผนที่ไปตึก 高盛创富中心 (ประมาณ 400-500 เมตร)</span>
-                            <span>💰 ค่ารถ: ~7 หยวน</span>
-                        </div>
-                        <div class="expense-box"><span>¥</span><input type="number" class="actual-expense" placeholder="จ่ายจริง (หยวน)"></div>
-                    </div>
-                </div>
+    <label class="checkbox-wrapper">
+        <input type="checkbox" class="task-checkbox">
+        <span class="checkmark"></span>
+    </label>
+    <div class="activity-info">
+        <div class="time-badge">05:00 - 07:30</div>
+        <div class="title">ถึงสนามบิน CKG ผ่าน ตม. และเดินทางเข้าที่พักใหม่</div>
+        <div class="action-tags">
+            <button class="btn-tag guide" onclick="openHotelGuide()">📑 วิธีเข้าโรงแรม (กันหลง)</button>
+            <a href="https://uri.amap.com/search?keyword=च重庆财汇广场B座" target="_blank" class="btn-tag amap">📍 Amap พิกัดตึกโรงแรม</a>
+        </div>
+        <div class="desc">
+            <span>🚇 <b>การเดินทาง:</b> นั่งรถไฟใต้ดิน (CRT) สาย 10 จากสนามบิน CKG มาลงสถานี <b>Zengjiayan</b> เพื่อเปลี่ยนเป็นสาย 2 แล้วนั่งมาลงสถานี <b>Linjiangmen</b> จากนั้นออก <b>ทางออก B</b> แล้วเดินต่อตามแผนที่เข้าตึก Caihui Plaza (Tower B) ประมาณ 200 เมตร</span>
+            <br><br>
+            <span>🏨 <b>ชื่อโรงแรมภาษาจีน:</b> 梵调美宿（重庆解放碑店）</span>
+        </div>
+        <div class="expense-box">
+            <span>¥</span>
+            <input type="number" class="actual-expense" placeholder="ค่ารถ: ~7 หยวน">
+        </div>
+    </div>
+</div>
 
                 <div class="activity-card task-item">
                     <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
