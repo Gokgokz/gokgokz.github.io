@@ -10,9 +10,6 @@
     <title>CN ฉงชิ่ง 5D4N</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
     <style>
         :root {
@@ -28,23 +25,27 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* 1. ล็อก Body ไม่ให้เลื่อนได้เด็ดขาด */
+        /* 1. ปลดล็อก Body ปล่อย Scroll ธรรมชาติและเปลี่ยนสีพื้นหลังกันจอดำ */
         html, body { 
-    font-family: 'Kanit', sans-serif; 
-    background-color: var(--bg-main); 
-    margin: 0; padding: 0;
-    min-height: 100dvh; /* ใช้ min-height แทน height: 100% */
-}
+            font-family: 'Kanit', sans-serif; background-color: var(--bg-main); 
+            margin: 0; padding: 0; min-height: 100dvh;
+        }
 
-/* 2. App Container ไม่ต้องล็อกความสูงแล้ว */
-.app-container {
-    width: 100%; max-width: 430px; 
-    background-color: var(--bg-main); 
-    min-height: 100dvh; 
-    margin: 0 auto; /* จัดกึ่งกลางจอแทน flex */
-    display: flex; flex-direction: column; 
-    position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-}
+        /* 2. App Container ไม่ต้องล็อกความสูงแล้ว จัดกึ่งกลางด้วย margin */
+        .app-container {
+            width: 100%; max-width: 430px; background-color: var(--bg-main); 
+            min-height: 100dvh; margin: 0 auto;
+            display: flex; flex-direction: column; 
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+        }
+
+        /* 3. Header ยึดติดด้านบนเสมอเวลาไถจอ (position: sticky) */
+        .app-header {
+            flex-shrink: 0; position: sticky; top: 0;
+            background: var(--header-bg); color: white; padding: calc(20px + var(--safe-top)) 20px 10px 20px;
+            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10;
+        }
         
         .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .header-titles h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
@@ -67,11 +68,11 @@
         .tab-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-family: 'Kanit'; white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-btn.active { background: #ffffff; color: #e94057; font-weight: 600; border-color: #ffffff; }
 
-        /* 4. ให้ Content กินพื้นที่ส่วนที่เหลือ และ "เลื่อนได้เฉพาะในนี้" */
+        /* 4. Content ให้ขยายตามเนื้อหา ไม่ต้องมี overflow-y สกอร์ในตัว */
         .content { 
-    flex-grow: 1; 
-    padding: 20px 15px calc(90px + var(--safe-bottom)); 
-}
+            flex-grow: 1; 
+            padding: 20px 15px calc(90px + var(--safe-bottom)); 
+        }
         
         .day-group { display: none; animation: simpleFade 0.2s ease-out; }
         .day-group.active { display: block; }
@@ -119,37 +120,26 @@
         .title-custom { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 10px; }
         .btn-delete-custom { color: #ff4757; font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Kanit'; padding: 0; margin-top: 2px; flex-shrink: 0;}
 
-        /* 5. Bottom Reset Bar อิงกับตําแหน่งของคอนเทนเนอร์หลัก */
+        /* 5. Bottom Bar ล็อกติดจอด้านล่างแบบสีทึบ ไม่มี Blur */
         .bottom-bar { 
-    position: fixed; 
-    bottom: 0; left: 50%; 
-    transform: translateX(-50%); /* ให้อยู่กึ่งกลางหน้าจอเสมอ */
-    width: 100%; max-width: 430px; 
-    background: var(--card-bg); /* ใช้สีทึบไปเลย */
-    padding: 15px 20px calc(15px + var(--safe-bottom)); 
-    border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
-}
-body.dark-mode .bottom-bar { 
-    background: var(--card-bg); 
-    border-color: rgba(255,255,255,0.05); 
-}
-        body.dark-mode .bottom-bar { background: rgba(30,30,30,0.9); border-color: rgba(255,255,255,0.05); }
+            position: fixed; 
+            bottom: 0; left: 50%; 
+            transform: translateX(-50%); /* ให้อยู่กึ่งกลางหน้าจอเสมอ */
+            width: 100%; max-width: 430px; 
+            background: var(--card-bg); /* ใช้สีทึบไปเลย */
+            padding: 15px 20px calc(15px + var(--safe-bottom)); 
+            border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
+        }
+        body.dark-mode .bottom-bar { background: var(--card-bg); border-color: rgba(255,255,255,0.05); }
         .btn-reset { background: var(--input-bg); color: var(--text-dark); border: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
 
-        /* MODALS */
+        /* MODALS (เอา backdrop-filter ออก ใช้สีพื้นหลังเข้มขึ้นนิดนึง) */
         .modal-overlay { 
-    position: fixed; top: 0; left: 0; 
-    width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.85); /* ปรับให้ทึบขึ้นนิดนึงแทนการเบลอ */
-    z-index: 999; display: flex; justify-content: center; align-items: center; 
-    opacity: 0; pointer-events: none; transition: 0.3s; 
-}
-    
-    /* แก้ปัญหา Stacking Context */
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px); 
-    transform: translateZ(0);
-}
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); /* เปลี่ยนจาก 0.8 เป็น 0.85 และลบ blur */
+            z-index: 999; display: flex; justify-content: center; align-items: center; 
+            opacity: 0; pointer-events: none; transition: 0.3s; 
+        }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(20px); transition: 0.3s; color: var(--text-dark); max-height: 85vh; overflow-y: auto;}
         .modal-overlay.active .modal-content { transform: translateY(0); }
@@ -953,13 +943,13 @@ body.dark-mode .bottom-bar {
             </div>
 
         </div>
+    </div>
 
-        <div class="bottom-bar">
-            <button class="btn-reset" onclick="resetApp()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                รีเซ็ตแผนกลับเป็น 0
-            </button>
-        </div>
+    <div class="bottom-bar">
+        <button class="btn-reset" onclick="resetApp()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            รีเซ็ตแผนกลับเป็น 0
+        </button>
     </div>
 
     <div class="modal-overlay" id="flashcard-modal" onclick="closeModals()">
@@ -1218,29 +1208,31 @@ body.dark-mode .bottom-bar {
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js" defer></script>
+
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBbQJOMlzv9PymTmUx4FvY-s7RC-p1wm3w",
-            authDomain: "chongqing-trip.firebaseapp.com",
-            databaseURL: "https://chongqing-trip-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "chongqing-trip",
-            storageBucket: "chongqing-trip.firebasestorage.app",
-            messagingSenderId: "592768189299",
-            appId: "1:592768189299:web:c48f8bffa155cf2adffb06",
-            measurementId: "G-4JF6W6XN5R"
-        };
+        // กำหนดให้ Firebase เริ่มทำงานหลังจากโหลดสคริปต์เสร็จแล้ว
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyBbQJOMlzv9PymTmUx4FvY-s7RC-p1wm3w",
+                authDomain: "chongqing-trip.firebaseapp.com",
+                databaseURL: "https://chongqing-trip-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "chongqing-trip",
+                storageBucket: "chongqing-trip.firebasestorage.app",
+                messagingSenderId: "592768189299",
+                appId: "1:592768189299:web:c48f8bffa155cf2adffb06",
+                measurementId: "G-4JF6W6XN5R"
+            };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const tripRef = db.ref('tripData');
+            // ตรวจสอบก่อนป้องกันการ init ซ้ำ
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            const db = firebase.database();
+            const tripRef = db.ref('tripData');
 
-        let totalExpense = 0;
-        let completedCards = [];
-        let currentExchangeRate = 5.1;
-        let isDarkMode = localStorage.getItem('cq_darkmode') === 'true';
-
-        window.onload = () => {
-            if(isDarkMode) enableDarkMode();
+            window.db = db; // ให้ global เข้าถึงได้
             
             tripRef.on('value', (snapshot) => {
                 document.getElementById('sync-overlay').style.opacity = '0';
@@ -1263,6 +1255,15 @@ body.dark-mode .bottom-bar {
                 bindAllTasks();
                 updateUI();
             });
+        });
+
+        let totalExpense = 0;
+        let completedCards = [];
+        let currentExchangeRate = 5.1;
+        let isDarkMode = localStorage.getItem('cq_darkmode') === 'true';
+
+        window.onload = () => {
+            if(isDarkMode) enableDarkMode();
         };
 
         function switchTab(event, dayId) {
@@ -1276,7 +1277,8 @@ body.dark-mode .bottom-bar {
             const scrollPos = event.currentTarget.offsetLeft - (tabContainer.offsetWidth / 2) + (event.currentTarget.offsetWidth / 2);
             tabContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
 
-            document.getElementById('scrollable-content').scrollTo(0, 0);
+            // เลื่อนจอแบบธรรมชาติ (Native) แทน overflow-y
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.addEventListener('focusin', (e) => {
@@ -1308,7 +1310,7 @@ body.dark-mode .bottom-bar {
             if(!title) { alert('กรุณาใส่ชื่อเรื่องด้วยครับ'); return; }
 
             const newTask = { id: Date.now().toString(), dayId: dayId, time: dayId === 'pre-trip' ? '' : time, title: title, desc: desc };
-            db.ref('tripData/customTasks/' + newTask.id).set(newTask);
+            window.db.ref('tripData/customTasks/' + newTask.id).set(newTask);
 
             document.getElementById('custom-time').value = '';
             document.getElementById('custom-title').value = '';
@@ -1348,11 +1350,11 @@ body.dark-mode .bottom-bar {
             event.stopPropagation();
             if(!confirm('ต้องการลบรายการนี้ใช่ไหม?')) return;
             
-            db.ref('tripData/customTasks/' + id).remove();
+            window.db.ref('tripData/customTasks/' + id).remove();
             
             if (completedCards.includes(titleText)) {
                 completedCards = completedCards.filter(t => t !== titleText);
-                db.ref('tripData/tasks').set(completedCards);
+                window.db.ref('tripData/tasks').set(completedCards);
             }
         }
 
@@ -1391,8 +1393,8 @@ body.dark-mode .bottom-bar {
                         newTasks.push(title);
                     }
                     
-                    db.ref('tripData/tasks').set(newTasks);
-                    db.ref('tripData/expense').set(totalExpense + cost);
+                    window.db.ref('tripData/tasks').set(newTasks);
+                    window.db.ref('tripData/expense').set(totalExpense + cost);
                 }, 400);
             }
         }
@@ -1448,7 +1450,7 @@ body.dark-mode .bottom-bar {
                     if (data && data.rates && data.rates.THB) {
                         let newRate = Math.round(data.rates.THB * 100) / 100;
                         document.getElementById('conv-rate-val').value = newRate;
-                        db.ref('tripData/rate').set(newRate);
+                        window.db.ref('tripData/rate').set(newRate);
                         calcConv(); 
                         statusMsg.style.color = '#2ed573';
                         statusMsg.innerText = 'อัปเดตเรทล่าสุดสำเร็จ!';
@@ -1473,7 +1475,7 @@ body.dark-mode .bottom-bar {
         function calcConv() {
             let cny = parseFloat(document.getElementById('conv-cny').value) || 0;
             let rate = parseFloat(document.getElementById('conv-rate-val').value) || 0;
-            if (rate !== currentExchangeRate) db.ref('tripData/rate').set(rate);
+            if (rate !== currentExchangeRate) window.db.ref('tripData/rate').set(rate);
             document.getElementById('conv-thb').innerText = Math.round(cny * rate).toLocaleString('th-TH');
         }
 
@@ -1483,10 +1485,10 @@ body.dark-mode .bottom-bar {
 
         function resetApp() {
             if(!confirm("รีเซ็ตการเดินทางและ 'ยอดใช้จ่าย' ทั้งหมดกลับเป็น 0 ใช่ไหม? (รายการที่คุณสร้างเองจะไม่ถูกลบ)")) return;
-            db.ref('tripData/tasks').remove();
-            db.ref('tripData/expense').set(0);
+            window.db.ref('tripData/tasks').remove();
+            window.db.ref('tripData/expense').set(0);
             document.querySelectorAll('.actual-expense').forEach(input => input.value = '');
-            document.getElementById('scrollable-content').scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         /* ฟังก์ชันควบคุมการซ่อน/แสดงส่วนหัวแอป */
