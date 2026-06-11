@@ -25,13 +25,11 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* 1. ปลดล็อก Body ปล่อย Scroll ธรรมชาติและเปลี่ยนสีพื้นหลังกันจอดำ */
         html, body { 
             font-family: 'Kanit', sans-serif; background-color: var(--bg-main); 
             margin: 0; padding: 0; min-height: 100dvh;
         }
 
-        /* 2. App Container ไม่ต้องล็อกความสูงแล้ว จัดกึ่งกลางด้วย margin */
         .app-container {
             width: 100%; max-width: 430px; background-color: var(--bg-main); 
             min-height: 100dvh; margin: 0 auto;
@@ -39,7 +37,6 @@
             position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
         }
 
-        /* 3. Header ยึดติดด้านบนเสมอเวลาไถจอ (position: sticky) */
         .app-header {
             flex-shrink: 0; position: sticky; top: 0;
             background: var(--header-bg); color: white; padding: calc(20px + var(--safe-top)) 20px 10px 20px;
@@ -68,7 +65,6 @@
         .tab-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-family: 'Kanit'; white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-btn.active { background: #ffffff; color: #e94057; font-weight: 600; border-color: #ffffff; }
 
-        /* 4. Content ให้ขยายตามเนื้อหา ไม่ต้องมี overflow-y สกอร์ในตัว */
         .content { 
             flex-grow: 1; 
             padding: 20px 15px calc(90px + var(--safe-bottom)); 
@@ -81,7 +77,6 @@
         .day-title { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; }
         .day-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--primary); border-radius: 4px; margin-right: 10px; }
 
-        /* Card & Task Item */
         .activity-card {
             background: var(--card-bg); border-radius: 16px; padding: 20px 16px; margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; gap: 15px; align-items: flex-start;
@@ -120,23 +115,21 @@
         .title-custom { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 10px; }
         .btn-delete-custom { color: #ff4757; font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Kanit'; padding: 0; margin-top: 2px; flex-shrink: 0;}
 
-        /* 5. Bottom Bar ล็อกติดจอด้านล่างแบบสีทึบ ไม่มี Blur */
         .bottom-bar { 
             position: fixed; 
             bottom: 0; left: 50%; 
-            transform: translateX(-50%); /* ให้อยู่กึ่งกลางหน้าจอเสมอ */
+            transform: translateX(-50%);
             width: 100%; max-width: 430px; 
-            background: var(--card-bg); /* ใช้สีทึบไปเลย */
+            background: var(--card-bg); 
             padding: 15px 20px calc(15px + var(--safe-bottom)); 
             border-top: 1px solid rgba(0,0,0,0.05); z-index: 100; 
         }
         body.dark-mode .bottom-bar { background: var(--card-bg); border-color: rgba(255,255,255,0.05); }
         .btn-reset { background: var(--input-bg); color: var(--text-dark); border: none; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
 
-        /* MODALS (เอา backdrop-filter ออก ใช้สีพื้นหลังเข้มขึ้นนิดนึง) */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); /* เปลี่ยนจาก 0.8 เป็น 0.85 และลบ blur */
+            background: rgba(0,0,0,0.85); 
             z-index: 999; display: flex; justify-content: center; align-items: center; 
             opacity: 0; pointer-events: none; transition: 0.3s; 
         }
@@ -149,7 +142,6 @@
         .btn-primary { background: #ff4757; color: white; border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; font-family: 'Kanit'; margin-bottom: 8px;}
         .btn-close { background: var(--input-bg); color: var(--text-dark); border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; font-family: 'Kanit'; }
 
-        /* Flashcard & Converter */
         .flashcard-prefix { font-size: 16px; color: var(--text-gray); margin-bottom: 10px; }
         .flashcard-cn { font-size: 40px; font-weight: 700; color: #ff4757; margin: 0; line-height: 1.2; }
         .flashcard-py { font-size: 15px; color: var(--text-gray); margin: 10px 0; }
@@ -169,61 +161,72 @@
         .conv-input-group input { flex-grow: 1; border: none; background: transparent; font-size: 20px; font-weight: 600; color: var(--text-dark); outline: none; width: 100%; }
         .conv-result { font-size: 32px; font-weight: 700; color: #2ed573; margin: 10px 0 20px 0; }
 
-        /* Sync Loading Overlay */
         #sync-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 1000; display: flex; flex-direction: column;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 1000; display: none; flex-direction: column;
             justify-content: center; align-items: center; transition: 0.5s;
         }
         .spinner-sync { width: 40px; height: 40px; border: 4px solid rgba(255, 71, 87, 0.2); border-top-color: #ff4757; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
 
-        /* --- ระบบย่อ Header --- */
         #header-collapsible {
-            max-height: 500px; /* ตั้งค่าเผื่อให้พอดีกับความสูงเนื้อหา */
+            max-height: 500px;
             opacity: 1;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease-in-out;
         }
-
         .app-header.collapsed #header-collapsible {
             max-height: 0;
             opacity: 0;
         }
 
         .header-toggle-btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 4px;
-            cursor: pointer;
-            color: rgba(255, 255, 255, 0.6);
-            transition: 0.2s;
+            display: flex; justify-content: center; align-items: center;
+            margin-top: 4px; cursor: pointer; color: rgba(255, 255, 255, 0.6); transition: 0.2s;
         }
-        
-        .header-toggle-btn:active {
-            color: white;
-            transform: scale(0.9);
-        }
+        .header-toggle-btn:active { color: white; transform: scale(0.9); }
+        .header-toggle-btn svg { width: 22px; height: 22px; transition: transform 0.4s ease; }
+        .app-header.collapsed .header-toggle-btn svg { transform: rotate(180deg); }
 
-        .header-toggle-btn svg {
-            width: 22px;
-            height: 22px;
-            transition: transform 0.4s ease;
+        /* CSS สำหรับหน้าล็อกอิน */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--bg-main); z-index: 9999; display: flex; 
+            flex-direction: column; justify-content: center; align-items: center;
         }
-
-        /* เมื่อโดนย่อ ให้หมุนลูกศรกลับลงมา */
-        .app-header.collapsed .header-toggle-btn svg {
-            transform: rotate(180deg);
+        body.dark-mode #login-overlay { background: #121212; color: white; }
+        .login-box {
+            background: var(--card-bg); padding: 30px; border-radius: 20px; 
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 85%; max-width: 350px;
         }
+        .login-box h2 { font-size: 20px; margin-top: 0; margin-bottom: 20px; color: var(--text-dark); }
+        .login-box input {
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--text-gray); 
+            margin-bottom: 15px; font-family: 'Kanit'; text-align: center; font-size: 16px;
+            background: var(--input-bg); color: var(--text-dark); outline: none;
+        }
+        .login-box button {
+            width: 100%; background: #ff4757; color: white; border: none; padding: 14px; 
+            border-radius: 12px; font-family: 'Kanit'; font-size: 16px; font-weight: 600; cursor: pointer;
+        }
+        #login-error { color: #ff4757; font-size: 14px; margin-top: 15px; display: none; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div id="sync-overlay">
-            <div class="spinner-sync"></div>
-            <div style="color: var(--text-dark); font-weight: 500; font-family: 'Kanit';">กำลังดึงข้อมูลทริปล่าสุด...</div>
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>🔒 กรุณาใส่รหัสผ่านเพื่อเข้าแอป</h2>
+            <input type="password" id="admin-password" placeholder="รหัสผ่านทริป">
+            <button onclick="checkPassword()">เข้าสู่ระบบ</button>
+            <div id="login-error">รหัสผ่านไม่ถูกต้อง!</div>
         </div>
+    </div>
 
+    <div id="sync-overlay">
+        <div class="spinner-sync"></div>
+        <div style="color: var(--text-dark); font-weight: 500; font-family: 'Kanit';">กำลังดึงข้อมูลทริปล่าสุด...</div>
+    </div>
+
+    <div class="app-container" style="display: none;" id="main-app">
         <div class="app-header">
             <div id="header-collapsible">
                 <div class="header-top">
@@ -251,7 +254,6 @@
 
             <div class="day-tabs" id="tab-container">
                 <button class="tab-btn active" onclick="switchTab(event, 'pre-trip')">🎒 เตรียมตัว</button>
-                <button class="tab-btn" onclick="switchTab(event, 'day0')">Day 0</button>
                 <button class="tab-btn" onclick="switchTab(event, 'day1')">Day 1</button>
                 <button class="tab-btn" onclick="switchTab(event, 'day2')">Day 2</button>
                 <button class="tab-btn" onclick="switchTab(event, 'day3')">Day 3</button>
@@ -303,9 +305,10 @@
 
                 <button class="btn-add-task" onclick="openAddTaskModal('pre-trip')">➕ เพิ่มรายการของคุณเอง</button>
             </div>
-
-            <div class="day-group" id="day0">
-                <div class="day-title">📍 Day 0: วันพฤหัสบดีที่ 25 มิ.ย. (เดินทางถึงฉงชิ่ง)</div>
+            
+           
+            <div class="day-group" id="day1">
+                <div class="day-title">📍 Day 1: วันศุกร์ที่ 26 มิ.ย. (ปะทะเมือง 3 มิติ)</div>
                 
                 <div class="activity-card task-item">
                     <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
@@ -314,10 +317,10 @@
                         <div class="title">ถึงสนามบิน CKG ผ่าน ตม. และฝากกระเป๋า</div>
                         <div class="action-tags">
                             <button class="btn-tag guide" onclick="document.getElementById('airport-transport-modal').classList.add('active')">📑 วิธีไปโรงแรม Fandiao Meiju (Caihui Plaza)</button>
+                            </div>
                             <a href="https://uri.amap.com/search?keyword=梵调美宿（重庆解放碑店）" target="_blank" class="btn-tag amap">📍 Amap</a>
                             <a href="https://www.google.com/maps/search/?api=1&query=花市豌杂面+重庆" target="_blank" class="btn-tag gmap">📍 Google</a>
                             <button class="btn-tag cn" onclick="openFlashcard('梵调美宿（重庆解放碑店)', 'Fàndiào Měijū', 'โรงแรมฟั่นเตี้ยว เหม่ยจู')">🇨🇳 ยื่นให้แท็กซี่</button>
-                        </div>
                         <div class="desc">
                             <span>🚆 <b>เดินทาง:</b> นั่งรถไฟใต้ดิน (CRT) สาย 10 มาลงสถานี Zengjiayan เปลี่ยนเป็นสาย 2 มาลงสถานี Linjiangmen จากนั้นออก <b>ทางออก B</b> แล้วเดินต่อตามแผนที่เข้าตึก Caihui Plaza (Tower B) ประมาณ 200 เมตร</span>
                             <span>💰 ค่ารถ: ~7 หยวน</span>
@@ -326,11 +329,6 @@
                     </div>
                 </div>
 
-                <button class="btn-add-task" onclick="openAddTaskModal('day0')">➕ เพิ่มรายการของคุณเอง</button>
-            </div>
-            <div class="day-group" id="day1">
-                <div class="day-title">📍 Day 1: วันศุกร์ที่ 26 มิ.ย. (ปะทะเมือง 3 มิติ)</div>
-                
                 <div class="activity-card task-item">
                     <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
                     <div class="activity-info">
@@ -403,7 +401,7 @@
                     </div>
                 </div>
 
-                <div class="activity-card task-item">
+                  <div class="activity-card task-item">
                     <label class="checkbox-wrapper"><input type="checkbox" class="task-checkbox"><span class="checkmark"></span></label>
                     <div class="activity-info">
                         <div class="time-badge">16:00 - 16:30</div>
@@ -924,7 +922,7 @@
                             <button class="btn-tag cn" onclick="openFlashcard('重庆江北国际机场', 'Chóngqìng Jiāngběi Jīchǎng', 'สนามบินฉงชิ่งเจียงเป่ย')">🇨🇳 ยื่นให้แท็กซี่</button>
                         </div>
                         <div class="desc">
-                            <span>🚆 เดินทางด้วยรถไฟ (แนะนำวิธีนี้): เดินจากที่พักไปขึ้นรถไฟที่ สถานี Xiaoshizi (สาย 6) นั่งไปลงที่สถานี Hongtudi (红土地) เพื่อเปลี่ยนเป็น สาย 10 (Line 10) ยิงยาวเข้าสู่สนามบิน CKG ได้เลย (สาย 10 ผ่านทั้ง Terminal 2 และ 3)</span>
+                            <span>🚆 เดินทางด้วยรถไฟ: นั่ง CRT สาย 10 ยิงยาวไปสนามบิน หรือ เดินจากที่พักไปที่สถานี Linjiangmen (สาย 2) หรือ Xiaoshizi (สาย 1/6) แล้วไปเปลี่ยนเป็น สาย 10 (Line 10) ซึ่งจะวิ่งตรงเข้าสู่สนามบินทั้ง Terminal 2 และ Terminal 3</span>
                             <span>🚆 เดินทางด้วยรถบัส: บริเวณข้างห้าง Park108 (ฝั่งตรงข้าม Apple Store ย่าน Jiefangbei) รถออกทุก 30 นาที (ไม่ต้องรอคนเต็ม) ส่งถึง Terminal </span>
                             <span>💰 ค่ารถ: ~7-15 หยวน</span>
                         </div>
@@ -1217,8 +1215,52 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js" defer></script>
 
     <script>
-        // กำหนดให้ Firebase เริ่มทำงานหลังจากโหลดสคริปต์เสร็จแล้ว
-        window.addEventListener('DOMContentLoaded', (event) => {
+        // 1. ตั้งค่ารหัสผ่านที่ต้องการ (สามารถแก้จากตรงนี้ได้เลย)
+        const ADMIN_PASSWORD = "admin";
+
+        // Global variables
+        let totalExpense = 0;
+        let completedCards = [];
+        let currentExchangeRate = 5.1;
+        let isDarkMode = localStorage.getItem('cq_darkmode') === 'true';
+        let isAppInitialized = false;
+
+        // 2. เมื่อโหลดเว็บเสร็จ เช็คสถานะการล็อกอิน
+        window.addEventListener('DOMContentLoaded', () => {
+            if(isDarkMode) enableDarkMode();
+
+            // เช็คว่าเคยล็อกอินสำเร็จแล้วหรือยัง
+            if (localStorage.getItem('cq_logged_in') === 'true') {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                initFirebaseApp(); // ผ่านแล้วโหลด Firebase ได้เลย
+            }
+        });
+
+        // 3. ฟังก์ชันตรวจรหัสผ่านจากหน้า Login
+        function checkPassword() {
+            const input = document.getElementById('admin-password').value;
+            if (input === ADMIN_PASSWORD) {
+                // รหัสถูก: บันทึกไว้ในเครื่อง ซ่อนหน้าล็อกอิน โชว์แอป และโหลดฐานข้อมูล
+                localStorage.setItem('cq_logged_in', 'true');
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                document.getElementById('login-error').style.display = 'none';
+                initFirebaseApp();
+            } else {
+                // รหัสผิด: โชว์ข้อความแจ้งเตือน
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        // 4. ฟังก์ชันโหลดและซิงค์ข้อมูล (จะทำงานก็ต่อเมื่อล็อกอินผ่านแล้วเท่านั้น)
+        function initFirebaseApp() {
+            if(isAppInitialized) return; // ป้องกันการรันซ้ำ
+            isAppInitialized = true;
+
+            // โชว์แอนิเมชันกำลังโหลดทับหน้าแอปไว้ก่อน
+            document.getElementById('sync-overlay').style.display = 'flex';
+
             const firebaseConfig = {
                 apiKey: "AIzaSyBbQJOMlzv9PymTmUx4FvY-s7RC-p1wm3w",
                 authDomain: "chongqing-trip.firebaseapp.com",
@@ -1230,21 +1272,17 @@
                 measurementId: "G-4JF6W6XN5R"
             };
 
-            // ตรวจสอบก่อนป้องกันการ init ซ้ำ
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
-            const tripRef = db.ref('tripData');
-
-            window.db = db; // ให้ global เข้าถึงได้
+            window.db = db;
             
+            const tripRef = db.ref('tripData');
             tripRef.on('value', (snapshot) => {
+                // ซ่อนหน้าต่างโหลดเมื่อดึงข้อมูลเสร็จ
                 document.getElementById('sync-overlay').style.opacity = '0';
                 setTimeout(() => document.getElementById('sync-overlay').style.display = 'none', 500);
 
                 const data = snapshot.val() || { expense: 0, tasks: [], customTasks: {}, rate: 5.1 };
-
                 totalExpense = data.expense || 0;
                 completedCards = data.tasks || [];
                 currentExchangeRate = data.rate || 5.1;
@@ -1252,7 +1290,6 @@
                 document.getElementById('conv-rate-val').value = currentExchangeRate;
 
                 document.querySelectorAll('.custom-item').forEach(el => el.remove());
-                
                 if (data.customTasks) {
                     Object.values(data.customTasks).forEach(task => renderSingleCustomTask(task));
                 }
@@ -1260,16 +1297,7 @@
                 bindAllTasks();
                 updateUI();
             });
-        });
-
-        let totalExpense = 0;
-        let completedCards = [];
-        let currentExchangeRate = 5.1;
-        let isDarkMode = localStorage.getItem('cq_darkmode') === 'true';
-
-        window.onload = () => {
-            if(isDarkMode) enableDarkMode();
-        };
+        }
 
         function switchTab(event, dayId) {
             document.querySelectorAll('.day-group').forEach(group => group.classList.remove('active'));
@@ -1282,18 +1310,19 @@
             const scrollPos = event.currentTarget.offsetLeft - (tabContainer.offsetWidth / 2) + (event.currentTarget.offsetWidth / 2);
             tabContainer.scrollTo({ left: scrollPos, behavior: 'smooth' });
 
-            // เลื่อนจอแบบธรรมชาติ (Native) แทน overflow-y
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.addEventListener('focusin', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                document.querySelector('.bottom-bar').style.display = 'none';
+                const bottomBar = document.querySelector('.bottom-bar');
+                if(bottomBar) bottomBar.style.display = 'none';
             }
         });
         document.addEventListener('focusout', (e) => {
             setTimeout(() => {
-                document.querySelector('.bottom-bar').style.display = 'flex';
+                const bottomBar = document.querySelector('.bottom-bar');
+                if(bottomBar) bottomBar.style.display = 'flex';
             }, 100);
         });
 
@@ -1496,7 +1525,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* ฟังก์ชันควบคุมการซ่อน/แสดงส่วนหัวแอป */
         function toggleHeader() {
             const header = document.querySelector('.app-header');
             header.classList.toggle('collapsed');
